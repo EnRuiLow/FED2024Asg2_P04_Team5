@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-buttons button {
+      margin: 0 5px;
+      padding: 7px; /* Adjusted size to match the emojis */
+      border: none;
+      background-color: #eee;
+      border-radius: 5px; /* Square corners */
+      cursor: pointer;
+      font-size: 1rem; /* Adjust font size */
+      font-weight: bold; /* Make the text bold */
+    }
+
+    .nav-buttons button:hover {
+      background-color: #dddddd;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .user-info span {
+      margin-right: 10px;
+    }
+
+    .user-info button {
+      font-size: 1.05rem; /* Decreased emoji size */
+      margin: 0 5px;
+      border: none;
+      background: #ddd; /* Slightly darker grey background for padding */
+      border-radius: 50%; /* Make it circular */
+      padding: 7px; /* Reduced padding by 70% */
+      cursor: pointer;
+    }
+
+    .user-info button.sell-button {
+      font-size: 1.05rem;
+      margin: 0 5px;
+      border: none;
+      background: #ddd; /* Slightly darker grey background */
+      border-radius: 5px; /* Square corners */
+      padding: 7px; /* Same size as emoji buttons */
+      cursor: pointer;
+      font-weight: bold; /* Make the text bold */
+    }
+
+    .user-info button:hover {
+      background: #ccc; /* Slightly darker on hover */
+    }
+
+    .search-bar {
+      padding: 10px;
+      background-color: #fff;
+      margin: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      margin-bottom: 10px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .product-card {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .product-card .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin: 0 auto 10px;
+    }
+
+    .product-card .description {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-buttons">
+    <button>MokeSell</button>
+    <button>Fashion</button>
+    <button>Electronics</button>
+    <button>Luxury</button>
+  </div>
+  <div class="user-info">
+    <span style="font-weight: bold;">Aquaman110</span>
+    <button>❤️</button>
+    <button>🔔</button>
+    <button>🛒</button>
+    <button>💬</button>
+    <button class="sell-button">Sell</button>
+  </div>
+</header>
+
+<div class="search-bar">
+  <input type="text" placeholder="Search for an item">
+</div>
+
+<main>
+  <div class="section">
+    <h2>Looks like your kinda thing</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 1</div>
+        <div class="description">Description of product 1</div>
+      </div>
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 2</div>
+        <div class="description">Description of product 2</div>
+      </div>
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 3</div>
+        <div class="description">Description of product 3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Your daily picks</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 4</div>
+        <div class="description">Description of product 4</div>
+      </div>
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 5</div>
+        <div class="description">Description of product 5</div>
+      </div>
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 6</div>
+        <div class="description">Description of product 6</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Recommended for you</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 7</div>
+        <div class="description">Description of product 7</div>
+      </div>
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 8</div>
+        <div class="description">Description of product 8</div>
+      </div>
+      <div class="product-card">
+        <div class="user-avatar"></div>
+        <div>Product 9</div>
+        <div class="description">Description of product 9</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
