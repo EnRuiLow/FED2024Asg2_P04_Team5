@@ -94,6 +94,20 @@
       background-color: #555;
     }
 
+    .social-login {
+      width: 100%;
+      padding: 10px;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .social-login:hover {
+      background: #ddd;
+    }
+
     p {
       text-align: center;
     }
@@ -110,9 +124,6 @@
     <nav>
       <ul>
         <li><a href="#">MokeSell</a></li>
-        <li><a href="#">Fashion</a></li>
-        <li><a href="#">Electronics</a></li>
-        <li><a href="#">Luxury</a></li>
       </ul>
       <div class="auth-links">
         <a href="login.html">Log in</a>
@@ -124,6 +135,9 @@
     <div class="form-container">
       <h1>Register on MokeSell</h1>
       <form id="registerForm">
+        <button type="button" class="social-login">Continue with Google</button>
+        <button type="button" class="social-login">Continue with Apple</button>
+
         <div class="input-group">
           <label for="name">Name</label>
           <input type="text" id="name" placeholder="Enter your full name" required>
