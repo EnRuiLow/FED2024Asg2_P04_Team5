@@ -4,16 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Setup</title>
-  <!-- Firebase App (required) for v11 -->
+  <title>MokeSell - Login</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Firebase App (required) -->
   <script type="module">
-    // Import the functions you need from Firebase v11
+    // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
     import { getFirestore } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-    // Your Firebase configuration
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
       authDomain: "p04-team5.firebaseapp.com",
@@ -26,20 +26,181 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    console.log("Firebase initialized:", app.name);
+    document.addEventListener("DOMContentLoaded", () => {
+      // Handle login form submission
+      const loginForm = document.getElementById("loginForm");
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          console.log("Logged in successfully:", userCredential.user);
+          alert("Login successful!");
+        } catch (error) {
+          console.error("Error logging in:", error.message);
+          alert("Failed to log in: " + error.message);
+        }
+      });
+    });
   </script>
 </head>
 
 <body>
-  <h1>Firebase Setup Test</h1>
-  <p>Check the console to see if Firebase is initialized.</p>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#" class="active">MokeSell</a></li>
+        <li><a href="#">Fashion</a></li>
+        <li><a href="#">Electronics</a></li>
+        <li><a href="#">Luxury</a></li>
+      </ul>
+      <div class="auth-links">
+        <a href="#" id="register">Register</a>
+        <a href="#" id="login">Log in</a>
+      </div>
+    </nav>
+  </header>
 
-  <!-- Your custom JavaScript file -->
-  <script type="module" src="script.js"></script>
+  <main>
+    <div class="form-container">
+      <h1>Log in to MokeSell</h1>
+      <form id="loginForm">
+        <button type="button" class="social-login">Continue with Google</button>
+        <button type="button" class="social-login">Continue with Apple</button>
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit" class="btn">Log in</button>
+        <p>New to MokeSell? <a href="#">Sign up</a></p>
+        <p><a href="#">Forgot Password</a></p>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 MokeSell. All rights reserved.</p>
+  </footer>
+
+  <style>
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #222;
+      color: white;
+      padding: 10px 20px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+    }
+
+    nav ul li a.active {
+      text-decoration: underline;
+    }
+
+    .auth-links a {
+      margin-left: 10px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .form-container {
+      max-width: 400px;
+      margin: 50px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h1 {
+      text-align: center;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    .social-login {
+      width: 100%;
+      padding: 10px;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .social-login:hover {
+      background: #ddd;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #222;
+      color: white;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
 </body>
 
 </html>
+
