@@ -37,6 +37,7 @@ addDoc(collection(db, "users"), {
   uid: "USER_ID",
   name: "John Doe",
   email: "user@example.com",
+  password: "password123",
 })
   .then(() => {
     console.log("User data saved!");
