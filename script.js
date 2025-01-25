@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+
 // Your Firebase configuration object
 const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
@@ -15,34 +16,36 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-console.log("Firebase initialized:", app.name);
 
-// Set up Firebase Authentication
+// Initialize Firebase Authentication
 const auth = getAuth(app);
-
-// Example: Sign up a user with email and password
-createUserWithEmailAndPassword(auth, "user@example.com", "password123")
-  .then((userCredential) => {
-    console.log("User signed up:", userCredential.user);
-  })
-  .catch((error) => {
-    console.error("Error signing up:", error);
-  });
 
 // Initialize Firestore
 const db = getFirestore(app);
 
-// Example: Save user data
-addDoc(collection(db, "users"), {
-  uid: "USER_ID",
-  name: "John Doe",
-  email: "user@example.com",
-  password: "password123",
-})
-  .then(() => {
-    console.log("User data saved!");
-  })
-  .catch((error) => {
-    console.error("Error saving user data:", error);
-  });
+// Registration form handler
+document.getElementById('registerForm').addEventListener('submit', async function (event) {
+  event.preventDefault();
+
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    // Firebase Authentication: Register user with email and password
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    // Save user data in Firestore
+    await addDoc(collection(db, "users"), {
+      uid: userCredential.user.uid,
+      name: name,
+      email: email,
+    });
+
+    alert('Registration successful!');
+    window.location.href = 'login.html'; // Redirect to login page
+  } catch (error) {
+    alert('An error occurred: ' + error.message);
+  }
+});
 
