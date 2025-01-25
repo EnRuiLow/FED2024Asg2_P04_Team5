@@ -1,11 +1,19 @@
-<script type="module">
-    // Import the functions you need from the SDKs you need
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Setup</title>
+  <!-- Firebase App (required) for v11 -->
+  <script type="module">
+    // Import the functions you need from Firebase v11
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+    // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
       authDomain: "p04-team5.firebaseapp.com",
@@ -15,9 +23,23 @@
       appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
       measurementId: "G-BKQ9JDGZ9G"
     };
-  
+
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
-</script>
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
+    console.log("Firebase initialized:", app.name);
+  </script>
+</head>
+
+<body>
+  <h1>Firebase Setup Test</h1>
+  <p>Check the console to see if Firebase is initialized.</p>
+
+  <!-- Your custom JavaScript file -->
+  <script type="module" src="script.js"></script>
+</body>
+
+</html>
