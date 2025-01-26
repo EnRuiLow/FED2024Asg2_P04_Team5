@@ -142,6 +142,19 @@
       font-size: 0.9rem;
       color: #666;
     }
+
+    .product-card img {
+  width: 100%; /* Ensures the image fills the card horizontally */
+  height: auto; /* Adjusts height to maintain aspect ratio */
+  max-height: 200px; /* Sets a maximum height for better fit */
+  object-fit: contain; /* Prevents image distortion and fits content within bounds */
+  border-radius: 5px; /* Matches the card style */
+  margin-bottom: 10px; /* Adds space between the image and the text */
+}
+
+
+
+
   </style>
 </head>
 <body>
@@ -172,17 +185,17 @@
     <h2>Looks like your kinda thing</h2>
     <div class="product-grid">
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/bike.jpg">
         <div>Product 1</div>
         <div class="description">Description of product 1</div>
       </div>
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/claw-ring.jpeg">
         <div>Product 2</div>
         <div class="description">Description of product 2</div>
       </div>
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/seiko-watch.webp">
         <div>Product 3</div>
         <div class="description">Description of product 3</div>
       </div>
@@ -193,17 +206,17 @@
     <h2>Your daily picks</h2>
     <div class="product-grid">
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/basketball.avif">
         <div>Product 4</div>
         <div class="description">Description of product 4</div>
       </div>
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/basketball-shoes.png">
         <div>Product 5</div>
         <div class="description">Description of product 5</div>
       </div>
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/jeans.avif">
         <div>Product 6</div>
         <div class="description">Description of product 6</div>
       </div>
@@ -214,17 +227,17 @@
     <h2>Recommended for you</h2>
     <div class="product-grid">
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/ASUS-Zenbook.jpg">
         <div>Product 7</div>
         <div class="description">Description of product 7</div>
       </div>
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/aula-keyboard.webp">
         <div>Product 8</div>
         <div class="description">Description of product 8</div>
       </div>
       <div class="product-card">
-        <div class="user-avatar"></div>
+        <img src="/images/phone.jpg">
         <div>Product 9</div>
         <div class="description">Description of product 9</div>
       </div>
