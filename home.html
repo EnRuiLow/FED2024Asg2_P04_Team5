@@ -28,13 +28,13 @@
 
     .nav-buttons button {
       margin: 0 5px;
-      padding: 7px; /* Adjusted size to match the emojis */
+      padding: 7px;
       border: none;
       background-color: #eee;
-      border-radius: 5px; /* Square corners */
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 1rem; /* Adjust font size */
-      font-weight: bold; /* Make the text bold */
+      font-size: 1rem;
+      font-weight: bold;
     }
 
     .nav-buttons button:hover {
@@ -51,12 +51,12 @@
     }
 
     .user-info button {
-      font-size: 1.05rem; /* Decreased emoji size */
+      font-size: 1.05rem;
       margin: 0 5px;
       border: none;
-      background: #ddd; /* Slightly darker grey background for padding */
-      border-radius: 50%; /* Make it circular */
-      padding: 7px; /* Reduced padding by 70% */
+      background: #ddd;
+      border-radius: 50%;
+      padding: 7px;
       cursor: pointer;
     }
 
@@ -64,15 +64,15 @@
       font-size: 1.05rem;
       margin: 0 5px;
       border: none;
-      background: #ddd; /* Slightly darker grey background */
-      border-radius: 5px; /* Square corners */
-      padding: 7px; /* Same size as emoji buttons */
+      background: #ddd;
+      border-radius: 5px;
+      padding: 7px;
       cursor: pointer;
-      font-weight: bold; /* Make the text bold */
+      font-weight: bold;
     }
 
     .user-info button:hover {
-      background: #ccc; /* Slightly darker on hover */
+      background: #ccc;
     }
 
     .search-bar {
@@ -103,14 +103,12 @@
     }
 
     .section:nth-child(2) .product-grid {
-    grid-template-columns: repeat(5, 1fr); /* Adjust grid to accommodate 5 items */
-  }
-  
-      /* Update grid-template-columns for the third section only */
-    .section:nth-child(3) .product-grid {
-      grid-template-columns: repeat(5, 1fr); /* Set to 5 columns */
+      grid-template-columns: repeat(5, 1fr);
     }
 
+    .section:nth-child(3) .product-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
 
     .product-grid {
       display: grid;
@@ -119,74 +117,110 @@
     }
 
     .product-card {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column; /* Vertical stacking */
-  justify-content: space-between;
-  height: 350px; /* Uniform height for all cards */
-}
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 350px;
+    }
 
-.product-card div {
-  flex: none;
-}
+    .product-card div {
+      flex: none;
+    }
 
-.product-card .description {
-  margin-top: 10px;
-  font-size: 0.9rem;
-  color: #666;
-  min-height: 40px; /* Ensure consistent height for description across all cards */
-}
+    .product-card .description {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #666;
+      min-height: 40px;
+    }
 
-.product-card div:first-child {
-  margin-bottom: auto; /* Push title and description towards the bottom */
-}
+    .product-card div:first-child {
+      margin-bottom: auto;
+    }
 
-.product-card img {
-  width: 100%;
-  max-height: 150px; /* Ensure consistent image height */
-  object-fit: contain;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
+    .product-card img {
+      width: 100%;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
 
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
 
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add hover effect */
-}
+    .product-card:focus {
+      outline: 2px solid #007bff;
+    }
 
-.product-card:focus {
-  outline: 2px solid #007bff; /* Add a focus outline for accessibility */
-}
+    .product-card .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin: 0 auto 10px;
+    }
 
-.product-card .user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #ccc;
-  margin: 0 auto 10px;
-}
+    .section:nth-child(1) .product-card img {
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
 
-/* Target only the product images in the first section */
-.section:nth-child(1) .product-card img {
-  width: 100%;
-  height: auto;
-  max-height: 200px; /* Ensures consistent image height */
-  object-fit: contain;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
+    .carousel {
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      gap: 10px;
+    }
 
+    .carousel img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 5px;
+      scroll-snap-align: center;
+      flex: 0 0 100%;
+    }
 
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
 
+    .carousel-buttons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
 
+    .carousel-button {
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .carousel-button:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
 
   </style>
 </head>
@@ -200,7 +234,7 @@
     <button>Luxury</button>
   </div>
   <div class="user-info">
-    <span style="font-weight: bold;">Aquaman110</span>
+    <span style="font-weight: bold;">SkibidiRizzler</span>
     <button>❤️</button>
     <button>🔔</button>
     <button>🛒</button>
@@ -217,20 +251,55 @@
   <div class="section">
     <h2>Looks like your kinda thing</h2>
     <div class="product-grid">
+      <!-- Product 1 -->
       <div class="product-card">
-        <img src="/images/bike.jpg">
-        <div>Product 1</div>
-        <div class="description">Description of product 1</div>
+        <div class="carousel">
+          <img src="/images/bike.jpg" alt="Bike">
+          <img src="/images/bike-side.webp" alt="Bike Side">
+          <img src="/images/bike-detail.jpg" alt="Bike Detail">
+        </div>
+        <div class="carousel-buttons">
+          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
+          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
+        </div>
+        <div><b>Bicycles</b></div>
+        <div>2021 Radon (R1 105)</div>
+        <div>Mongoose Adult 700 Guide Sport Gravel Bike</div>
+        <div>Silex 200</div>
       </div>
+
+      <!-- Product 2 -->
       <div class="product-card">
-        <img src="/images/claw-ring.jpeg">
-        <div>Product 2</div>
-        <div class="description">Description of product 2</div>
+        <div class="carousel">
+          <img src="/images/claw-ring.jpeg" alt="Claw Ring">
+          <img src="/images/ring.jpeg" alt="Claw Ring Detail 1">
+          <img src="/images/ring-back.avif" alt="Claw Ring Detail 2">
+        </div>
+        <div class="carousel-buttons">
+          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
+          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
+        </div>
+        <div><b>Rings</b></div>
+        <div>Personalized Open Dragon Claw Ring Eagle Claw Ring</div>
+        <div>Stainless Steel Band Ring Blue Silver</div>
+        <div>Temple and Grace Singapore Silver Ring Men</div>
       </div>
+
+      <!-- Product 3 -->
       <div class="product-card">
-        <img src="/images/seiko-watch.webp">
-        <div>Product 3</div>
-        <div class="description">Description of product 3</div>
+        <div class="carousel">
+          <img src="/images/seiko-watch.webp" alt="Seiko Watch">
+          <img src="/images/seiko-watch-side.jpeg" alt="Seiko Watch Side">
+          <img src="/images/seiko-watch-back.webp" alt="Seiko Watch Back">
+        </div>
+        <div class="carousel-buttons">
+          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
+          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
+        </div>
+        <div><b>Watches</b></div>
+        <div>Seiko Prospex Speedtimer Crono Solar</div>
+        <div>Seiko Presage SPB463</div>
+        <div>Seiko Automatic Men's Watch SRPH87K1</div>
       </div>
     </div>
   </div>
@@ -265,7 +334,6 @@
       </div>
     </div>
   </div>
-  
 
   <div class="section">
     <h2>Recommended for you</h2>
@@ -295,8 +363,17 @@
         <div>Product 14</div>
         <div class="description">Description of product 11</div>
       </div>
+    </div>
   </div>
 </main>
+
+<script>
+  function scrollCarousel(button, direction) {
+    const carousel = button.closest('.product-card').querySelector('.carousel');
+    const scrollAmount = carousel.offsetWidth;
+    carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+  }
+</script>
 
 </body>
 </html>
