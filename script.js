@@ -49,3 +49,42 @@ document.getElementById('registerForm').addEventListener('submit', async functio
   }
 });
 
+
+
+// This is for the search bar
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.querySelector(".search-bar input");
+  const productCards = document.querySelectorAll(".product-card");
+  const sections = document.querySelectorAll(".section");
+
+  searchInput.addEventListener("input", function () {
+      const searchText = searchInput.value.toLowerCase();
+
+      sections.forEach(section => {
+          const header = section.querySelector("h2");
+          const cards = section.querySelectorAll(".product-card");
+          let hasVisibleCard = false;
+
+          cards.forEach(card => {
+              const title = card.querySelector("div:nth-of-type(1) b")?.textContent.toLowerCase() || "";
+              const descriptions = Array.from(card.querySelectorAll(".description"))
+                  .map(desc => desc.textContent.toLowerCase())
+                  .join(" ");
+
+              if (title.includes(searchText) || descriptions.includes(searchText)) {
+                  card.style.display = "flex"; // Show matching products
+                  hasVisibleCard = true;
+              } else {
+                  card.style.display = "none"; // Hide non-matching products
+              }
+          });
+
+          // Show or hide the header based on whether any cards are visible
+          if (hasVisibleCard) {
+              header.style.display = "block";
+          } else {
+              header.style.display = "none";
+          }
+      });
+  });
+});

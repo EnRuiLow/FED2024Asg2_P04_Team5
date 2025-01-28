@@ -367,6 +367,7 @@
   </div>
 </main>
 
+<script src="home.js"></script>
 <script>
   function scrollCarousel(button, direction) {
     const carousel = button.closest('.product-card').querySelector('.carousel');
@@ -395,7 +396,31 @@
     const newText = descriptions[newIndex];
     newText.innerHTML = `<b>${newText.innerHTML}</b>`;
   }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector(".search-bar input");
+    const productCards = document.querySelectorAll(".product-card");
+
+    searchInput.addEventListener("input", function () {
+        const searchText = searchInput.value.toLowerCase();
+
+        productCards.forEach(card => {
+            const title = card.querySelector("div:nth-of-type(1) b")?.textContent.toLowerCase() || "";
+            const descriptions = Array.from(card.querySelectorAll(".description"))
+                .map(desc => desc.textContent.toLowerCase())
+                .join(" ");
+
+            if (title.includes(searchText) || descriptions.includes(searchText)) {
+                card.style.display = "flex"; // Show matching products
+            } else {
+                card.style.display = "none"; // Hide non-matching products
+            }
+        });
+    });
+});
+
 </script>
 
 </body>
 </html>
+
