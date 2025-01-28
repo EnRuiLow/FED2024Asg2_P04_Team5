@@ -1,14 +1,7 @@
-// Import Firebase SDKs
+// Initialize Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  serverTimestamp, 
-  query, 
-  orderBy, 
-  onSnapshot 
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -24,16 +17,25 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // DOM Elements
-const messageContainer = document.getElementById("messages");
-const chatForm = document.getElementById("chatForm");
-const messageInput = document.getElementById("messageInput");
+const chatList = document.getElementById('chatList');
+const messageContainer = document.getElementById('messages');
+const chatForm = document.getElementById('chatForm');
+const messageInput = document.getElementById('messageInput');
+
+// Function to toggle sidebar visibility
+const toggleSidebar = () => {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('open');
+};
 
 // Function to send a message
 const sendMessage = async (chatId, userId, message) => {
   try {
-    const messagesRef = collection(db, `chats/${chatId}/messages`);
+    // Send the message to the user's chat sub-collection
+    const messagesRef = collection(db, `users/${userId}/chats/${chatId}/messages`);
     await addDoc(messagesRef, {
       userId,
       message,
@@ -45,9 +47,9 @@ const sendMessage = async (chatId, userId, message) => {
   }
 };
 
-// Function to listen for new messages
-const listenForMessages = (chatId, callback) => {
-  const messagesRef = collection(db, `chats/${chatId}/messages`);
+// Function to listen for new messages in the current chat
+const listenForMessages = (userId, chatId, callback) => {
+  const messagesRef = collection(db, `users/${userId}/chats/${chatId}/messages`);
   const q = query(messagesRef, orderBy("timestamp", "asc"));
 
   return onSnapshot(q, (snapshot) => {
@@ -75,21 +77,76 @@ const renderMessages = (messages) => {
   messageContainer.scrollTop = messageContainer.scrollHeight;
 };
 
+// Function to load a chat room and display its messages
+const loadChatRoom = (userId, chatId) => {
+  listenForMessages(userId, chatId, renderMessages);
+};
+
+// Function to open a specific chat room
+const openChat = (chatId) => {
+  const userId = auth.currentUser?.uid;
+  if (userId) {
+    loadChatRoom(userId, chatId);
+  }
+};
+
+// Function to create a new chat room between two users
+const createChatRoom = async (user1Id, user2Id) => {
+  try {
+    // Create a new chat room document for user1
+    const chatRef1 = doc(db, `users/${user1Id}/chats`, `${user1Id}_${user2Id}`);
+    await addDoc(collection(db, `users/${user1Id}/chats/${chatRef1.id}/messages`), {
+      userId: user1Id,
+      message: "Chat started",
+      timestamp: serverTimestamp(),
+    });
+
+    // Create a new chat room document for user2
+    const chatRef2 = doc(db, `users/${user2Id}/chats`, `${user2Id}_${user1Id}`);
+    await addDoc(collection(db, `users/${user2Id}/chats/${chatRef2.id}/messages`), {
+      userId: user2Id,
+      message: "Chat started",
+      timestamp: serverTimestamp(),
+    });
+
+    console.log("Chat rooms created successfully!");
+  } catch (error) {
+    console.error("Error creating chat room:", error);
+  }
+};
+
 // Attach event listener to the form
 chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const chatId = "chatRoom1"; // Hardcoded chat room ID
-  const userId = "user123";   // Replace with your user authentication ID
+  const chatId = "chatRoom1"; // Assume chatId is provided from user input
+  const userId = auth.currentUser?.uid;
   const message = messageInput.value;
 
-  if (message.trim() !== "") {
+  if (message.trim() !== "" && userId) {
     sendMessage(chatId, userId, message);
     messageInput.value = ""; // Clear the input field
   }
 });
 
-// Start listening for messages
-listenForMessages("chatRoom1", renderMessages);
+// Wait for user authentication
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Render chat list if user is authenticated
+    chatList.innerHTML = ""; // Clear previous chats
+    // Assume you have a function to load user's chats
+    // populateChatList(user.uid);
+
+    // Open a default chat (chatRoom1) if the user is logged in
+    openChat("chatRoom1");
+  } else {
+    alert("Please log in to use the chat.");
+    window.location.href = "login.html"; // Redirect if not logged in
+  }
+});
+
+
+
+
 
 
 
