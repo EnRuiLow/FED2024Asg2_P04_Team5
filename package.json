@@ -1,0 +1,24 @@
+{
+  "name": "fed2024asg2_p04_team5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EnRuiLow/FED2024Asg2_P04_Team5.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EnRuiLow/FED2024Asg2_P04_Team5/issues"
+  },
+  "homepage": "https://github.com/EnRuiLow/FED2024Asg2_P04_Team5#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

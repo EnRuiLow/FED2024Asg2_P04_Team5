@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-buttons button {
+      margin: 0 5px;
+      padding: 7px;
+      border: none;
+      background-color: #eee;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .nav-buttons button:hover {
+      background-color: #dddddd;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .user-info span {
+      margin-right: 10px;
+    }
+
+    .user-info button {
+      font-size: 1.05rem;
+      margin: 0 5px;
+      border: none;
+      background: #ddd;
+      border-radius: 50%;
+      padding: 7px;
+      cursor: pointer;
+    }
+
+    .user-info button.sell-button {
+      font-size: 1.05rem;
+      margin: 0 5px;
+      border: none;
+      background: #ddd;
+      border-radius: 5px;
+      padding: 7px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .user-info button:hover {
+      background: #ccc;
+    }
+
+    .search-bar {
+      padding: 10px;
+      background-color: #fff;
+      margin: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      margin-bottom: 10px;
+    }
+
+    .section:nth-child(1) .product-card img {
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .section:nth-child(2) .product-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .section:nth-child(3) .product-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .product-card {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 350px;
+    }
+
+    .product-card div {
+      flex: none;
+    }
+
+    .product-card .description {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #666;
+      min-height: 40px;
+    }
+
+    .product-card div:first-child {
+      margin-bottom: auto;
+    }
+
+    .product-card img {
+      width: 100%;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-card:focus {
+      outline: 2px solid #007bff;
+    }
+
+    .product-card .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin: 0 auto 10px;
+    }
+
+    .carousel {
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      gap: 10px;
+    }
+
+    .carousel img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 5px;
+      scroll-snap-align: center;
+      flex: 0 0 100%;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-buttons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .carousel-button {
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .carousel-button:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-buttons">
+    <button>MokeSell</button>
+    <button>Fashion</button>
+    <button>Electronics</button>
+    <button>Luxury</button>
+  </div>
+  <div class="user-info">
+    <span style="font-weight: bold;">SkibidiRizzler</span>
+    <button>❤️</button>
+    <button>🔔</button>
+    <button>🛒</button>
+    <button>💬</button>
+    <button class="sell-button">Sell</button>
+  </div>
+</header>
+
+<div class="search-bar">
+  <input type="text" placeholder="Search for an item">
+</div>
+
+<main>
+  <div class="section">
+    <h2>Looks like your kinda thing</h2>
+    <div class="product-grid">
+      <!-- Product 1 -->
+      <div class="product-card">
+        <div class="carousel">
+          <img src="/images/bike.jpg" alt="Bike">
+          <img src="/images/bike-side.webp" alt="Bike Side">
+          <img src="/images/bike-detail.jpg" alt="Bike Detail">
+        </div>
+        <div class="carousel-buttons">
+          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
+          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
+        </div>
+        <div><b>Bicycles</b></div>
+        <div>2021 Radon (R1 105)</div>
+        <div>Mongoose Adult 700 Guide Sport Gravel Bike</div>
+        <div>Silex 200</div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card">
+        <div class="carousel">
+          <img src="/images/claw-ring.jpeg" alt="Claw Ring" class="active">
+          <img src="/images/ring.jpeg" alt="Claw Ring Detail 1">
+          <img src="/images/ring-back.avif" alt="Claw Ring Detail 2">
+        </div>
+        <div class="carousel-buttons">
+          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
+          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
+        </div>
+        <div><b>Rings</b></div>
+        <div>Personalized Open Dragon Claw Ring Eagle Claw Ring</div>
+        <div>Stainless Steel Band Ring Blue Silver</div>
+        <div>Temple and Grace Singapore Silver Ring Men</div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card">
+        <div class="carousel">
+          <img src="/images/seiko-watch.webp" alt="Seiko Watch">
+          <img src="/images/seiko-watch-side.jpeg" alt="Seiko Watch Side">
+          <img src="/images/seiko-watch-back.webp" alt="Seiko Watch Back">
+        </div>
+        <div class="carousel-buttons">
+          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
+          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
+        </div>
+        <div><b>Watches</b></div>
+        <div>Seiko Prospex Speedtimer Crono Solar</div>
+        <div>Seiko Presage SPB463</div>
+        <div>Seiko Automatic Men's Watch SRPH87K1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Your daily picks</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="/images/basketball.avif">
+        <div><b>Wilson basketball</b></div>
+        <div class="description">NBA Authentic Series Outdoor Basketball</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/basketball-shoes.png">
+        <div><b>KD16</b></div>
+        <div class="description">Kevin Durant 16 Aunt Pearl</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/jeans.avif">
+        <div><b>Wide Fit Jeans</b></div>
+        <div class="description">Blue Wide Fit Jeans from Uniqlo</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/shirt.avif">
+        <div><b>Polo Tee</b></div>
+        <div class="description">Black plain Polo Tee from H&M</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/wallet.jpg">
+        <div><b>Wallet</b></div>
+        <div class="description">Wallet from Kamaal Khan</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Recommended for you</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="/images/ASUS-Zenbook.jpg">
+        <div>Black ASUS Zenbook</div>
+        <div class="description">Zenbook is compact, thin and light, with the best innovative laptop technology, NanoEdge displays, precision craftsmanship, and uncompromising performance.</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/aula-keyboard.webp">
+        <div>White Aula Keyboard</div>
+        <div class="description">Aula Keyboard is ranked one of the highest budget keyboards on the market as of now</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/phone.jpg">
+        <div>Black Apple iPhone 15 Pro</div>
+        <div class="description">The iPhone 15 Pro provides pro camera system, 48MP Main Ultra Wide, Telephoto, Advanced dual-camera system, 48MP Main Ultra Wide, Super-high-resolution photos</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/vacuum.avif">
+        <div>White LG Robot Vacuum</div>
+        <div class="description">Clean your floors without lifting a finger. LG robotic vacuums use onboard cameras to analyse your home, map their path and efficiently clean your space.</div>
+      </div>
+      <div class="product-card">
+        <img src="/images/headphones.avif">
+        <div>Black Sony WH-1000XM4 Headphones</div>
+        <div class="description">Sony's WH-1000XM4 smart headphones with noise cancelling and exceptional sound quality. Clearer hands-free calls with built-in microphones.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function scrollCarousel(button, direction) {
+    const carousel = button.closest('.product-card').querySelector('.carousel');
+    const scrollAmount = carousel.offsetWidth;
+    carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    const productCard = button.closest(".product-card");
+    const carouselItems = productCard.querySelectorAll(".carousel img, div:nth-of-type(n+5)"); // Combine images and descriptions
+    const descriptions = productCard.querySelectorAll("div:nth-of-type(n+5)");
+    const currentBold = productCard.querySelector("div:nth-of-type(n+5) b");
+    let currentIndex = Array.from(descriptions).indexOf(currentBold?.parentElement);
+
+    // Determine the new index
+    currentIndex = currentBold ? currentIndex : -1;
+    let newIndex = currentIndex + direction;
+
+    // Wrap around if out of bounds
+    if (newIndex >= descriptions.length) newIndex = 0;
+    if (newIndex < 0) newIndex = descriptions.length -1;
+
+    // Clear existing bolded text
+    if (currentBold) {
+      currentBold.outerHTML = currentBold.innerHTML; // Remove <b>
+    }
+
+    // Bold the new text
+    const newText = descriptions[newIndex];
+    newText.innerHTML = `<b>${newText.innerHTML}</b>`;
+  }
+</script>
+
+</body>
+</html>

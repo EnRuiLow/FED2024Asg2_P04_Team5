@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MokeSell - Login</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
+      authDomain: "p04-team5.firebaseapp.com",
+      projectId: "p04-team5",
+      storageBucket: "p04-team5.firebasestorage.app",
+      messagingSenderId: "88767932375",
+      appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
+      measurementId: "G-BKQ9JDGZ9G"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginForm = document.getElementById("loginForm");
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          alert("Login successful!");
+          window.location.href = "home.html";
+        } catch (error) {
+          alert("Failed to log in: " + error.message);
+        }
+      });
+    });
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .auth-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border: 1px solid #333;
+      border-radius: 5px;
+    }
+
+    .form-container {
+      max-width: 400px;
+      margin: 4rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .input-group {
+      margin-bottom: 1rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+
+    .btn:hover {
+      background-color: #555;
+    }
+
+    .social-login {
+      width: 100%;
+      padding: 10px;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .social-login:hover {
+      background: #ddd;
+    }
+
+    p {
+      text-align: center;
+    }
+
+    p a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#">MokeSell</a></li>
+      </ul>
+      <div class="auth-links">
+        <a href="registration.html">Register</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <h1>Log in to MokeSell</h1>
+      <form id="loginForm">
+        <button type="button" class="social-login">Continue with Google</button>
+        <button type="button" class="social-login">Continue with Apple</button>
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn">Log in</button>
+        <p>New to MokeSell? <a href="registration.html">Sign up</a></p>
+        <p><a href="#">Forgot Password</a></p>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
