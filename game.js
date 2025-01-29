@@ -6,8 +6,9 @@ const progressEl = document.getElementById('progress');
 const couponEl = document.getElementById('coupon');
 const nextDayButton = document.getElementById('nextDay');
 
-// Check last claimed date
+// Get stored dates
 const lastClaimed = localStorage.getItem("lastClaimed");
+const lastLogin = localStorage.getItem("lastLogin");
 const today = new Date().toDateString();
 
 // Function to update UI
@@ -15,7 +16,7 @@ function updateTracker() {
     const couponValue = couponValues[currentDay];
     progressEl.style.width = `${(currentDay + 1) / couponValues.length * 100}%`;
     couponEl.textContent = `Today's Coupon: $${couponValue}`;
-    
+
     // Disable button if already claimed today
     if (lastClaimed === today) {
         nextDayButton.disabled = true;
@@ -24,6 +25,17 @@ function updateTracker() {
         nextDayButton.disabled = false;
         nextDayButton.textContent = "Claim Coupon";
     }
+}
+
+// First login check
+if (lastLogin !== today) {
+    alert("Welcome back! Claim your daily coupon.");
+    localStorage.setItem("lastLogin", today);
+    
+    // Disable claim button immediately upon login
+    localStorage.setItem("lastClaimed", today);
+    nextDayButton.disabled = true;
+    nextDayButton.textContent = "Claimed Today!";
 }
 
 // Handle claiming coupon
@@ -44,3 +56,4 @@ nextDayButton.addEventListener('click', () => {
 
 // Initialize UI
 updateTracker();
+
