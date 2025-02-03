@@ -84,3 +84,72 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+// Import necessary Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+// Firebase configuration and initialization
+const firebaseConfig = {
+  apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
+  authDomain: "p04-team5.firebaseapp.com",
+  projectId: "p04-team5",
+  storageBucket: "p04-team5.firebasestorage.app",
+  messagingSenderId: "88767932375",
+  appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
+  measurementId: "G-BKQ9JDGZ9G"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Function to fetch and display listings
+async function loadListings() {
+    const listingsContainer = document.querySelector(".product-grid"); // Adjust selector if needed
+    listingsContainer.innerHTML = ""; // Clear existing products
+
+    try {
+        const querySnapshot = await getDocs(collection(db, "listings"));
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const productCard = document.createElement("div");
+            productCard.classList.add("product-card");
+
+            productCard.innerHTML = `
+                <div class="carousel">
+                    <img src="${data.imageUrl}" alt="${data.title}" onerror="this.src='placeholder.jpg'">
+                </div>
+                <div class="product-info">
+                    <h3>${data.title}</h3>
+                    <p>$${data.price.toFixed(2)}</p>
+                    <p class="description">${data.description}</p>
+                </div>
+                <button class="buy-button">Buy Now</button>
+            `;
+
+            listingsContainer.appendChild(productCard);
+        });
+    } catch (error) {
+        console.error("Error fetching listings: ", error);
+    }
+}
+
+// Load products on page load
+document.addEventListener("DOMContentLoaded", loadListings);
+
+//  Delete expired listings when page loads
+async function deleteExpiredListings() {
+    const now = new Date();
+    const querySnapshot = await getDocs(collection(db, "listings"));
+  
+    querySnapshot.forEach(async (docSnapshot) => {
+      const data = docSnapshot.data();
+      if (data.expiresAt && data.expiresAt.toDate() <= now) {
+        await deleteDoc(doc(db, "listings", docSnapshot.id));
+        console.log(`Deleted expired listing: ${docSnapshot.id}`);
+      }
+    });
+  }
+  
+  // Run cleanup on page load
+  deleteExpiredListings();

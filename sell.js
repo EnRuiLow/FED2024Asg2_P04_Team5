@@ -1,7 +1,7 @@
 // Import necessary Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Firebase configuration and initialization
 const firebaseConfig = {
@@ -24,7 +24,7 @@ const sellForm = document.getElementById("sellForm");
 const titleInput = document.getElementById("title");
 const priceInput = document.getElementById("price");
 const descriptionInput = document.getElementById("description");
-const imageUrlInput = document.getElementById("imageUrl"); // Input for the image URL instead of file upload
+const imageUrlInput = document.getElementById("imageUrl");
 
 // Form submission handling
 sellForm.addEventListener("submit", async (event) => {
@@ -40,22 +40,27 @@ sellForm.addEventListener("submit", async (event) => {
   const title = titleInput.value;
   const price = priceInput.value;
   const description = descriptionInput.value;
-  const imageUrl = imageUrlInput.value; // Get the image URL from the input
+  const imageUrl = imageUrlInput.value;
 
   if (!imageUrl) {
     alert("Please provide an image URL.");
     return;
   }
 
+  // Set expiry date (30 days from now)
+  const expiryDate = new Date();
+  expiryDate.setDate(expiryDate.getDate() + 30);
+
   try {
-    // Create a new listing in Firestore with the image URL
+    // Create a new listing with an expiry date
     await addDoc(collection(db, "listings"), {
       title: title,
       price: parseFloat(price),
       description: description,
-      imageUrl: imageUrl,  // Save the image URL in Firestore
-      ownerId: user.uid,   // Use the current user's ID
-      createdAt: serverTimestamp()  // Add timestamp for listing creation
+      imageUrl: imageUrl,
+      ownerId: user.uid,
+      createdAt: serverTimestamp(),
+      expiresAt: Timestamp.fromDate(expiryDate) // Store expiry date in Firestore
     });
 
     alert("Item listed successfully!");
@@ -74,6 +79,24 @@ onAuthStateChanged(auth, (user) => {
     console.log("No user logged in");
   }
 });
+
+// 🔥 Delete expired listings when page loads
+async function deleteExpiredListings() {
+  const now = new Date();
+  const querySnapshot = await getDocs(collection(db, "listings"));
+
+  querySnapshot.forEach(async (docSnapshot) => {
+    const data = docSnapshot.data();
+    if (data.expiresAt && data.expiresAt.toDate() <= now) {
+      await deleteDoc(doc(db, "listings", docSnapshot.id));
+      console.log(`Deleted expired listing: ${docSnapshot.id}`);
+    }
+  });
+}
+
+// Run cleanup on page load
+deleteExpiredListings();
+
 
 
   
