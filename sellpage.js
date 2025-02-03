@@ -30,19 +30,33 @@ async function fetchListingDetails() {
 
     if (docSnap.exists()) {
         const data = docSnap.data();
+        console.log("Listing Data: ", data); 
         document.getElementById("listingTitle").innerText = data.title;
         document.getElementById("listingPrice").innerText = `S$${data.price}`;
         document.getElementById("listingDescription").innerText = data.description;
         document.getElementById("listingImage").src = data.imageUrl;
 
-        const sellerRef = doc(db, "users", data.ownerId);
+      
+        const createdAt = new Date(data.createdAt.seconds * 1000); 
+        const formattedDate = createdAt.toLocaleString(); 
+        document.getElementById("listingDate").innerText = `Listed on: ${formattedDate}`;
+
+        
+        console.log("Listing ownerId: ", data.ownerId);
+
+       
+        const sellerRef = doc(db, "users", data.ownerId); 
         const sellerSnap = await getDoc(sellerRef);
 
         if (sellerSnap.exists()) {
             const sellerData = sellerSnap.data();
-            document.getElementById("sellerName").innerText = `@${sellerData.ownerId}`;
+            console.log("Seller Data: ", sellerData); 
+            document.getElementById("sellerName").innerText = sellerData.name || `@${data.ownerId}`;
             document.getElementById("sellerRating").innerText = sellerData.rating || "N/A";
             document.getElementById("sellerReviews").innerText = sellerData.reviews || 0;
+        } else {
+            console.log("Seller document not found.");
+            document.getElementById("sellerName").innerText = "Seller not found";
         }
     } else {
         alert("Listing not found.");
@@ -50,4 +64,6 @@ async function fetchListingDetails() {
     }
 }
 
+
 fetchListingDetails();
+
