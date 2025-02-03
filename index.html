@@ -39,6 +39,19 @@
       </form>
     </div>
   </main>
+  <!-- Coupon Popup -->
+  <div id="couponPopup" class="coupon-popup-overlay">
+    <div class="coupon-tracker">
+      <span class="close-btn" onclick="closeCouponPopup()">&times;</span>
+      <h1>Daily Login Reward</h1>
+      <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <p class="coupon" id="coupon">Today's Coupon: $0</p>
+      <button id="claimButton">Claim Reward</button>
+    </div>
+  </div>
+
 
   <script type="module" src="index.js"></script>
 </body>
