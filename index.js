@@ -1,7 +1,16 @@
 // Import Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  setDoc 
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -19,6 +28,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Coupon values
+const couponValues = [1, 2, 3, 4, 5, 5, 5];
+
+let currentUser = null;
+let userData = null;
+
+// Login form submission
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   loginForm.addEventListener("submit", async (e) => {
@@ -30,9 +46,76 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful!");
+      currentUser = userCredential.user;
+      await initializeUserData();
+
+      // After successful authentication, redirect to home.html
       window.location.href = "home.html";
+
     } catch (error) {
       alert("Failed to log in: " + error.message);
     }
   });
 });
+
+// Track authentication state
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    await initializeUserData();
+  }
+});
+
+// Initialize user data in Firestore
+async function initializeUserData() {
+  const userRef = doc(db, "users", currentUser.uid);
+  const docSnap = await getDoc(userRef);
+
+  if (!docSnap.exists()) {
+    // New user initialization
+    await setDoc(userRef, {
+      currentDay: 0,
+      lastClaimed: "2000-01-01", // Default old date
+      totalRewards: 0
+    });
+  }
+
+  userData = (await getDoc(userRef)).data();
+}
+
+// Update the UI with the current progress and coupon value
+function updateTrackerUI() {
+  const progress = (userData.currentDay + 1) / couponValues.length * 100;
+  document.getElementById('progress').style.width = `${progress}%`;
+  document.getElementById('coupon').textContent = 
+    `Today's Coupon: $${couponValues[userData.currentDay]}`;
+}
+
+// Handle reward claim
+async function handleClaim() {
+  const today = new Date();
+  const userRef = doc(db, "users", currentUser.uid);
+
+  // Update user data
+  const newDay = (userData.currentDay + 1) % couponValues.length;
+  const newTotal = userData.totalRewards + couponValues[userData.currentDay];
+
+  await setDoc(userRef, {
+    currentDay: newDay,
+    lastClaimed: today.toISOString(),
+    totalRewards: newTotal
+  }, { merge: true });
+
+  alert(`Claimed $${couponValues[userData.currentDay]}! Total: $${newTotal}`);
+}
+
+// Event listeners
+document.getElementById('claimButton').addEventListener('click', handleClaim);
+document.getElementById('couponPopup').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('couponPopup')) closeCouponPopup();
+});
+
+// Close the coupon pop-up
+function closeCouponPopup() {
+  document.getElementById('couponPopup').style.display = 'none';
+}
