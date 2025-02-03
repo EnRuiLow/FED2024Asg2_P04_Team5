@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
@@ -24,39 +24,31 @@ if (!listingId) {
     window.location.href = "index.html";
 }
 
+let currentUserId = null;
+let sellerId = null;
+
+// Fetch listing details and seller info
 async function fetchListingDetails() {
     const docRef = doc(db, "listings", listingId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
         const data = docSnap.data();
-        console.log("Listing Data: ", data); 
         document.getElementById("listingTitle").innerText = data.title;
         document.getElementById("listingPrice").innerText = `S$${data.price}`;
         document.getElementById("listingDescription").innerText = data.description;
         document.getElementById("listingImage").src = data.imageUrl;
 
-      
-        const createdAt = new Date(data.createdAt.seconds * 1000); 
-        const formattedDate = createdAt.toLocaleString(); 
-        document.getElementById("listingDate").innerText = `Listed on: ${formattedDate}`;
-
-        
-        console.log("Listing ownerId: ", data.ownerId);
-
-       
-        const sellerRef = doc(db, "users", data.ownerId); 
+        // Fetch seller details
+        sellerId = data.ownerId; // Store seller ID
+        const sellerRef = doc(db, "users", sellerId);
         const sellerSnap = await getDoc(sellerRef);
 
         if (sellerSnap.exists()) {
             const sellerData = sellerSnap.data();
-            console.log("Seller Data: ", sellerData); 
-            document.getElementById("sellerName").innerText = sellerData.name || `@${data.ownerId}`;
+            document.getElementById("sellerName").innerText = sellerData.name || `@${sellerId}`;
             document.getElementById("sellerRating").innerText = sellerData.rating || "N/A";
             document.getElementById("sellerReviews").innerText = sellerData.reviews || 0;
-        } else {
-            console.log("Seller document not found.");
-            document.getElementById("sellerName").innerText = "Seller not found";
         }
     } else {
         alert("Listing not found.");
@@ -64,6 +56,53 @@ async function fetchListingDetails() {
     }
 }
 
+// Function to create a chatroom between the current user and the seller
+async function createChatRoom() {
+    if (!currentUserId || !sellerId) {
+        alert("Error: User or seller information is missing.");
+        return;
+    }
 
-fetchListingDetails();
+    if (currentUserId === sellerId) {
+        alert("You cannot chat with yourself.");
+        return;
+    }
 
+    try {
+        // Create a unique chat ID (combine user IDs in alphabetical order)
+        const chatId = [currentUserId, sellerId].sort().join("_");
+
+        // Check if the chatroom already exists
+        const chatRef = doc(db, `chats`, chatId);
+        const chatSnap = await getDoc(chatRef);
+
+        if (!chatSnap.exists()) {
+            // Create a new chatroom
+            await setDoc(chatRef, {
+                participants: [currentUserId, sellerId],
+                createdAt: new Date(),
+            });
+            console.log("Chatroom created successfully!");
+        }
+
+        // Redirect to the chat page with the chat ID
+        window.location.href = `chat.html?chatId=${chatId}`;
+    } catch (error) {
+        console.error("Error creating chatroom:", error);
+        alert("An error occurred while creating the chatroom.");
+    }
+}
+
+// Attach event listener to the "Chat with Seller" button
+document.getElementById("chatButton").addEventListener("click", createChatRoom);
+
+// Wait for user authentication
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUserId = user.uid; // Store current user ID
+        fetchListingDetails();
+    } else {
+        alert("Please log in to chat with the seller.");
+        window.location.href = "login.html"; // Redirect to login page
+    }
+});

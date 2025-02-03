@@ -1,7 +1,7 @@
 // Initialize Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"; // <-- Ensure 'where' is imported
 
 // Firebase configuration
 const firebaseConfig = {
@@ -20,22 +20,154 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 // DOM Elements
-const chatList = document.getElementById('chatList');
-const messageContainer = document.getElementById('messages');
-const chatForm = document.getElementById('chatForm');
-const messageInput = document.getElementById('messageInput');
+const chatList = document.getElementById("chatList");
+const messageContainer = document.getElementById("messages");
+const chatForm = document.getElementById("chatForm");
+const messageInput = document.getElementById("messageInput");
+const chatTitle = document.getElementById("chat-title");
+
+let currentUserId = null;
+let currentChatId = null;
+let unreadMessages = {}; // Track unread messages for each chat
 
 // Function to toggle sidebar visibility
 const toggleSidebar = () => {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('open');
+  const sidebar = document.getElementById("sidebar");
+  sidebar.classList.toggle("open");
+};
+
+
+const renderChatRoom = async (chatId, otherUserId) => {
+  const otherUserRef = doc(db, "users", otherUserId);
+  const otherUserSnap = await getDoc(otherUserRef);
+
+  let participantName = otherUserId; // Default to UID if name is unavailable
+  if (otherUserSnap.exists()) {
+    const otherUserData = otherUserSnap.data();
+    participantName = otherUserData.name || `@${otherUserId}`;
+  }
+
+  const chatItem = document.createElement("div");
+  chatItem.classList.add("chat-item");
+  chatItem.innerHTML = `<p>${participantName}</p>`;
+  chatItem.addEventListener("click", () => loadChatRoom(chatId));
+  chatList.appendChild(chatItem);
+};
+
+// Function to load a chatroom and display its messages
+const loadChatRoom = async (chatId) => {
+  currentChatId = chatId;
+  const chatRef = doc(db, "chats", chatId);
+  const chatSnap = await getDoc(chatRef);
+
+  if (chatSnap.exists()) {
+    const chatData = chatSnap.data();
+    const otherUserId = chatData.participants.find((id) => id !== currentUserId);
+    const otherUserRef = doc(db, "users", otherUserId);
+    const otherUserSnap = await getDoc(otherUserRef);
+
+    if (otherUserSnap.exists()) {
+      const otherUserData = otherUserSnap.data();
+      chatTitle.innerText = `Chat with ${otherUserData.name || `@${otherUserId}`}`;
+    }
+
+    // Mark messages as read
+    unreadMessages[chatId] = 0;
+    updateUnreadBadges();
+
+    // Load messages
+    listenForMessages(chatId, renderMessages);
+  }
+};
+
+// Function to listen for new messages in a chatroom
+const listenForMessages = (chatId, callback) => {
+  const messagesRef = collection(db, `chats/${chatId}/messages`);
+  const q = query(messagesRef, orderBy("timestamp", "asc"));
+
+  return onSnapshot(q, (snapshot) => {
+    const messages = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    callback(messages);
+
+    // Update unread messages if the chat is not active
+    if (chatId !== currentChatId) {
+      unreadMessages[chatId] = (unreadMessages[chatId] || 0) + 1;
+      updateUnreadBadges();
+    }
+  });
+};
+
+// Function to render messages in the chat UI
+// Cache user names to avoid repeated Firestore queries
+const userCache = {};
+
+// Function to get user name from Firestore or cache
+const getUserName = async (userId) => {
+  if (userCache[userId]) {
+    return userCache[userId]; // Return cached name
+  }
+
+  const userRef = doc(db, "users", userId);
+  const userSnap = await getDoc(userRef);
+  
+  if (userSnap.exists()) {
+    const userName = userSnap.data().name || `@${userId}`;
+    userCache[userId] = userName; // Store in cache
+    return userName;
+  }
+
+  return `@${userId}`; 
+};
+
+// Function to render messages in the chat UI
+const renderMessages = async (messages) => {
+  messageContainer.innerHTML = ""; // Clear existing messages
+
+  for (const msg of messages) {
+    const senderName = await getUserName(msg.userId);
+
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("message");
+    messageElement.innerHTML = `
+      <p><strong>${senderName}:</strong> ${msg.message}</p>
+      <small>${msg.timestamp?.toDate() ? new Date(msg.timestamp.toDate()).toLocaleString() : "Sending..."}</small>
+    `;
+    messageContainer.appendChild(messageElement);
+  }
+
+  // Scroll to the bottom
+  messageContainer.scrollTop = messageContainer.scrollHeight;
+};
+
+
+// Function to update unread message badges
+const updateUnreadBadges = () => {
+  const chatItems = document.querySelectorAll(".chat-item");
+  chatItems.forEach((item) => {
+    const chatId = item.dataset.chatId;
+    const badge = item.querySelector(".unread-badge");
+    if (unreadMessages[chatId] > 0) {
+      if (!badge) {
+        const badgeElement = document.createElement("span");
+        badgeElement.classList.add("unread-badge");
+        badgeElement.innerText = unreadMessages[chatId];
+        item.appendChild(badgeElement);
+      } else {
+        badge.innerText = unreadMessages[chatId];
+      }
+    } else if (badge) {
+      badge.remove();
+    }
+  });
 };
 
 // Function to send a message
 const sendMessage = async (chatId, userId, message) => {
   try {
-    // Send the message to the user's chat sub-collection
-    const messagesRef = collection(db, `users/${userId}/chats/${chatId}/messages`);
+    const messagesRef = collection(db, `chats/${chatId}/messages`);
     await addDoc(messagesRef, {
       userId,
       message,
@@ -47,83 +179,13 @@ const sendMessage = async (chatId, userId, message) => {
   }
 };
 
-// Function to listen for new messages in the current chat
-const listenForMessages = (userId, chatId, callback) => {
-  const messagesRef = collection(db, `users/${userId}/chats/${chatId}/messages`);
-  const q = query(messagesRef, orderBy("timestamp", "asc"));
-
-  return onSnapshot(q, (snapshot) => {
-    const messages = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    callback(messages);
-  });
-};
-
-// Function to render messages in the chat UI
-const renderMessages = (messages) => {
-  messageContainer.innerHTML = ""; // Clear existing messages
-  messages.forEach((msg) => {
-    const messageElement = document.createElement("div");
-    messageElement.classList.add("message");
-    messageElement.innerHTML = `
-      <p><strong>${msg.userId}:</strong> ${msg.message}</p>
-      <small>${msg.timestamp?.toDate() ? new Date(msg.timestamp.toDate()).toLocaleString() : "Sending..."}</small>
-    `;
-    messageContainer.appendChild(messageElement);
-  });
-  // Scroll to the bottom
-  messageContainer.scrollTop = messageContainer.scrollHeight;
-};
-
-// Function to load a chat room and display its messages
-const loadChatRoom = (userId, chatId) => {
-  listenForMessages(userId, chatId, renderMessages);
-};
-
-// Function to open a specific chat room
-const openChat = (chatId) => {
-  const userId = auth.currentUser?.uid;
-  if (userId) {
-    loadChatRoom(userId, chatId);
-  }
-};
-
-// Function to create a new chat room between two users
-const createChatRoom = async (user1Id, user2Id) => {
-  try {
-    // Create a new chat room document for user1
-    const chatRef1 = doc(db, `users/${user1Id}/chats`, `${user1Id}_${user2Id}`);
-    await addDoc(collection(db, `users/${user1Id}/chats/${chatRef1.id}/messages`), {
-      userId: user1Id,
-      message: "Chat started",
-      timestamp: serverTimestamp(),
-    });
-
-    // Create a new chat room document for user2
-    const chatRef2 = doc(db, `users/${user2Id}/chats`, `${user2Id}_${user1Id}`);
-    await addDoc(collection(db, `users/${user2Id}/chats/${chatRef2.id}/messages`), {
-      userId: user2Id,
-      message: "Chat started",
-      timestamp: serverTimestamp(),
-    });
-
-    console.log("Chat rooms created successfully!");
-  } catch (error) {
-    console.error("Error creating chat room:", error);
-  }
-};
-
 // Attach event listener to the form
 chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const chatId = "chatRoom1"; // Assume chatId is provided from user input
-  const userId = auth.currentUser?.uid;
   const message = messageInput.value;
 
-  if (message.trim() !== "" && userId) {
-    sendMessage(chatId, userId, message);
+  if (message.trim() !== "" && currentChatId && currentUserId) {
+    sendMessage(currentChatId, currentUserId, message);
     messageInput.value = ""; // Clear the input field
   }
 });
@@ -131,22 +193,22 @@ chatForm.addEventListener("submit", (e) => {
 // Wait for user authentication
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Render chat list if user is authenticated
-    chatList.innerHTML = ""; // Clear previous chats
-    // Assume you have a function to load user's chats
-    // populateChatList(user.uid);
+    currentUserId = user.uid;
 
-    // Open a default chat (chatRoom1) if the user is logged in
-    openChat("chatRoom1");
+    // Fetch and render the user's chatrooms
+    const chatsRef = collection(db, "chats");
+    const q = query(chatsRef, where("participants", "array-contains", currentUserId)); 
+
+    onSnapshot(q, (snapshot) => {
+      chatList.innerHTML = ""; // Clear previous chats
+      snapshot.forEach((doc) => {
+        const chatData = doc.data();
+        const otherUserId = chatData.participants.find((id) => id !== currentUserId);
+        renderChatRoom(doc.id, otherUserId);
+      });
+    });
   } else {
     alert("Please log in to use the chat.");
     window.location.href = "login.html"; // Redirect if not logged in
   }
 });
-
-
-
-
-
-
-

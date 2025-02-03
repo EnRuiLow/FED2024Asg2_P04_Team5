@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="chat.css">
 </head>
 <body>
-
   <!-- Sidebar Chat List -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -23,7 +22,7 @@
   <div class="chat-container">
     <header>
       <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-      <a href="home.html" class="back-btn">←</a> <!-- Back button link -->
+      <button class="back-home-btn" onclick="window.location.href='home.html'">←</button>
       <h2 id="chat-title">Chat</h2>
     </header>
     <div id="messages" class="messages"></div>
@@ -38,9 +37,3 @@
   <script type="module" src="Chat.js"></script>
 </body>
 </html>
-
-
-
-
-
-
