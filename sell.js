@@ -80,22 +80,6 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// 🔥 Delete expired listings when page loads
-async function deleteExpiredListings() {
-  const now = new Date();
-  const querySnapshot = await getDocs(collection(db, "listings"));
-
-  querySnapshot.forEach(async (docSnapshot) => {
-    const data = docSnapshot.data();
-    if (data.expiresAt && data.expiresAt.toDate() <= now) {
-      await deleteDoc(doc(db, "listings", docSnapshot.id));
-      console.log(`Deleted expired listing: ${docSnapshot.id}`);
-    }
-  });
-}
-
-// Run cleanup on page load
-deleteExpiredListings();
 
 
 

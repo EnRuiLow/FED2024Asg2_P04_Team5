@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Page</title>
+    <link rel="stylesheet" href="sellpage.css">
+</head>
+<body>
+    <header>
+        <div class="nav-buttons">
+            <button onclick="window.location.href='home.html'">Mokesell</button>
+            <button>Fashion</button>
+            <button>Electronics</button>
+            <button>Luxury</button>
+        </div>
+        <div class="user-info">
+            <span>SkibidiRizzler</span>
+            <button>❤️</button>
+            <button>🔔</button>
+            <button>🛒</button>
+            <button onclick="window.location.href='Chat.html'">💬</button>
+            <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Product Display Section -->
+        <div class="product-display">
+            <img id="listingImage" src="" alt="Product Image">
+        </div>
+
+        <!-- Product Info Section -->
+        <div class="product-info">
+            <h1 id="listingTitle"></h1>
+            <p id="listingPrice"></p>
+            <p id="listingDescription"></p>
+        </div>
+
+        <!-- Seller Info Section (Moved to Bottom) -->
+        <div class="seller-info">
+            <p>Seller: <span id="sellerName"></span></p>
+            <p>Rating: <span id="sellerRating"></span> (<span id="sellerReviews"></span> reviews)</p>
+            <button id="chatButton">Chat with Seller</button>
+        </div>
+    </div>
+
+    <script src="sellpage.js" type="module"></script>
+</body>
+</html>
+
+
+
