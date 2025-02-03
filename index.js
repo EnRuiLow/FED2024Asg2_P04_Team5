@@ -32,7 +32,7 @@ const db = getFirestore(app);
 const couponValues = [1, 2, 3, 4, 5, 5, 5];
 
 let currentUser = null;
-let userData = null;
+let userRewards = null;
 
 // Login form submission
 document.addEventListener("DOMContentLoaded", () => {
@@ -47,11 +47,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful!");
       currentUser = userCredential.user;
-      await initializeUserData();
+      await initializeUserRewards(); // Fetch or create reward tracking data
 
-      // After successful authentication, redirect to home.html
-      window.location.href = "home.html";
+      // Check if the user has already claimed today
+      const today = new Date().toDateString();
+      const lastClaimedDate = new Date(userRewards.lastClaimed).toDateString();
 
+      if (lastClaimedDate !== today) {
+        showCouponPopup(); // Show coupon pop-up
+      } else {
+        redirectToHome(); // If already claimed, proceed to home.html
+      }
+      
     } catch (error) {
       alert("Failed to log in: " + error.message);
     }
@@ -62,51 +69,68 @@ document.addEventListener("DOMContentLoaded", () => {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUser = user;
-    await initializeUserData();
+    await initializeUserRewards();
   }
 });
 
-// Initialize user data in Firestore
-async function initializeUserData() {
-  const userRef = doc(db, "users", currentUser.uid);
+// Initialize or fetch user rewards in Firestore
+async function initializeUserRewards() {
+  if (!currentUser) return;
+
+  const userRef = doc(db, "user_rewards", currentUser.uid);
   const docSnap = await getDoc(userRef);
 
   if (!docSnap.exists()) {
-    // New user initialization
+    // New user reward initialization
     await setDoc(userRef, {
+      email: currentUser.email,
       currentDay: 0,
       lastClaimed: "2000-01-01", // Default old date
       totalRewards: 0
     });
   }
 
-  userData = (await getDoc(userRef)).data();
+  userRewards = (await getDoc(userRef)).data();
+}
+
+// Show coupon pop-up if the reward hasn't been claimed today
+function showCouponPopup() {
+  document.getElementById('couponPopup').style.display = 'flex';
+  updateTrackerUI();
 }
 
 // Update the UI with the current progress and coupon value
 function updateTrackerUI() {
-  const progress = (userData.currentDay + 1) / couponValues.length * 100;
+  const progress = (userRewards.currentDay + 1) / couponValues.length * 100;
   document.getElementById('progress').style.width = `${progress}%`;
   document.getElementById('coupon').textContent = 
-    `Today's Coupon: $${couponValues[userData.currentDay]}`;
+    `Today's Coupon: $${couponValues[userRewards.currentDay]}`;
 }
 
 // Handle reward claim
 async function handleClaim() {
   const today = new Date();
-  const userRef = doc(db, "users", currentUser.uid);
+  const userRef = doc(db, "user_rewards", currentUser.uid);
 
-  // Update user data
-  const newDay = (userData.currentDay + 1) % couponValues.length;
-  const newTotal = userData.totalRewards + couponValues[userData.currentDay];
+  // Update user rewards
+  const newDay = (userRewards.currentDay + 1) % couponValues.length;
+  const newTotal = userRewards.totalRewards + couponValues[userRewards.currentDay];
 
   await setDoc(userRef, {
+    email: currentUser.email,
     currentDay: newDay,
     lastClaimed: today.toISOString(),
     totalRewards: newTotal
   }, { merge: true });
 
-  alert(`Claimed $${couponValues[userData.currentDay]}! Total: $${newTotal}`);
+  alert(`Claimed $${couponValues[userRewards.currentDay]}! Total: $${newTotal}`);
+  closeCouponPopup();
+  redirectToHome(); // Redirect after claiming
+}
+
+// Redirect user to home.html
+function redirectToHome() {
+  window.location.href = "home.html";
 }
 
 // Event listeners
