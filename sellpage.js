@@ -27,6 +27,31 @@ if (!listingId) {
 let currentUserId = null;
 let sellerId = null;
 
+// Function to fetch user's name from Firestore
+async function fetchUserName(uid) {
+    const userDocRef = doc(db, "users", uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+        return userDocSnap.data().name; // Get 'name' field from Firestore
+    } else {
+        console.log("No user document found!");
+        return "Guest"; // Default name if user data isn't found
+    }
+}
+
+// Listen for auth state changes and update the username dynamically
+onAuthStateChanged(auth, async (user) => {
+    const userInfoElement = document.querySelector("#username"); // Ensure the element has this ID in HTML
+    if (user && userInfoElement) {
+        const userName = await fetchUserName(user.uid);
+        userInfoElement.textContent = userName;
+    } else if (userInfoElement) {
+        userInfoElement.textContent = "Guest";
+    }
+});
+
+
 // Fetch listing details and seller info
 async function fetchListingDetails() {
     const docRef = doc(db, "listings", listingId);
