@@ -1,6 +1,6 @@
 // Import necessary Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 // Firebase configuration and initialization
@@ -76,8 +76,8 @@ function applyCurrentFilterAndRender() {
             sortedListings.sort((a, b) => b.price - a.price);
             break;
         case 'popular':
-            // Sort by popularity (ensure your listings have this field)
-            sortedListings.sort((a, b) => b.popularity - a.popularity);
+            // Sort by views, using 0 as fallback for listings without views
+            sortedListings.sort((a, b) => (b.views || 0) - (a.views || 0));
             break;
         default:
             sortedListings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
@@ -106,14 +106,21 @@ function renderListings(listings) {
             <button class="buy-button">Buy Now</button>
         `;
 
-        productCard.addEventListener("click", () => {
-            window.location.href = `sellpage.html?id=${listing.id}`;
+        productCard.addEventListener("click", async () => {
+            try {
+                const listingRef = doc(db, "listings", listing.id);
+                await updateDoc(listingRef, {
+                    views: increment(1)
+                });
+                window.location.href = `sellpage.html?id=${listing.id}`;
+            } catch (error) {
+                console.error("Error updating views: ", error);
+            }
         });
 
         listingsContainer.appendChild(productCard);
     });
 }
-
 // Update DOMContentLoaded handler
 document.addEventListener("DOMContentLoaded", async function () {
     await deleteExpiredListings();
@@ -165,6 +172,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+});
+
+// Modify your productCard.addEventListener in renderListings
+productCard.addEventListener("click", async () => {
+    try {
+        // Increment views counter before redirecting
+        const listingRef = doc(db, "listings", listing.id);
+        await updateDoc(listingRef, {
+            views: increment(1)
+        });
+        window.location.href = `sellpage.html?id=${listing.id}`;
+    } 
+    catch (error) {
+        console.error("Error updating views: ", error);
+    }
 });
 
 // Carousel scrolling functionality
