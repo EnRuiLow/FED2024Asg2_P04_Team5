@@ -1,20 +1,24 @@
-// Firebase initialization using global objects
+// Initialize Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, where } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"; // <-- Ensure 'where' is imported
+
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
   authDomain: "p04-team5.firebaseapp.com",
   projectId: "p04-team5",
-  storageBucket: "p04-team5.appspot.com",
+  storageBucket: "p04-team5.firebasestorage.app",
   messagingSenderId: "88767932375",
   appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
-  measurementId: "G-BKQ9JDGZ9G"
+  measurementId: "G-BKQ9JDGZ9G",
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-const urlParams = new URLSearchParams(window.location.search);
-const listingId = urlParams.get("id");
 // DOM Elements
 const chatList = document.getElementById("chatList");
 const messageContainer = document.getElementById("messages");
