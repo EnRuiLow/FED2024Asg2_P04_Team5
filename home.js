@@ -1,6 +1,7 @@
 // Import necessary Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 // Firebase configuration and initialization
 const firebaseConfig = {
@@ -16,6 +17,31 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+// Function to fetch user's name from Firestore
+async function fetchUserName(uid) {
+    const userDocRef = doc(db, "users", uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+        return userDocSnap.data().name; // Get 'name' field from Firestore
+    } else {
+        console.log("No user document found!");
+        return "Guest"; // Default name if user data isn't found
+    }
+}
+
+// Listen for auth state changes and update the username dynamically
+onAuthStateChanged(auth, async (user) => {
+    const userInfoElement = document.querySelector("#username"); // Ensure the element has this ID in HTML
+    if (user && userInfoElement) {
+        const userName = await fetchUserName(user.uid);
+        userInfoElement.textContent = userName;
+    } else if (userInfoElement) {
+        userInfoElement.textContent = "Guest";
+    }
+});
 
 // Function to fetch and display listings
 async function loadListings() {
@@ -44,7 +70,6 @@ async function loadListings() {
 
             // Set up click event for redirecting to the 'sellpage.html' with product ID
             productCard.addEventListener("click", function () {
-                // Redirect to sellpage.html with query params or localStorage (whichever works for your use case)
                 window.location.href = `sellpage.html?id=${docSnapshot.id}`;
             });
 
@@ -85,9 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const productCards = document.querySelectorAll(".product-card"); // Re-query all product cards
 
         productCards.forEach(card => {
-            // Correct selector to target title and description properly
-            const title = card.querySelector(".product-info h3")?.textContent.toLowerCase() || "";  // Get title from <h3>
-            const description = card.querySelector(".description")?.textContent.toLowerCase() || "";  // Get description
+            const title = card.querySelector(".product-info h3")?.textContent.toLowerCase() || "";
+            const description = card.querySelector(".description")?.textContent.toLowerCase() || "";
 
             // Check if the title or description includes the search text
             if (title.includes(searchText) || description.includes(searchText)) {
@@ -99,33 +123,27 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
 // Carousel scrolling functionality
 function scrollCarousel(button, direction) {
     const carousel = button.closest('.product-card').querySelector('.carousel');
     const scrollAmount = carousel.offsetWidth;
     carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
     const productCard = button.closest(".product-card");
-    const carouselItems = productCard.querySelectorAll(".carousel img, div:nth-of-type(n+5)"); // Combine images and descriptions
+    const carouselItems = productCard.querySelectorAll(".carousel img, div:nth-of-type(n+5)");
     const descriptions = productCard.querySelectorAll("div:nth-of-type(n+5)");
     const currentBold = productCard.querySelector("div:nth-of-type(n+5) b");
     let currentIndex = Array.from(descriptions).indexOf(currentBold?.parentElement);
 
-    // Determine the new index
     currentIndex = currentBold ? currentIndex : -1;
     let newIndex = currentIndex + direction;
 
-    // Wrap around if out of bounds
     if (newIndex >= descriptions.length) newIndex = 0;
-    if (newIndex < 0) newIndex = descriptions.length -1;
+    if (newIndex < 0) newIndex = descriptions.length - 1;
 
-    // Clear existing bolded text
     if (currentBold) {
-      currentBold.outerHTML = currentBold.innerHTML; // Remove <b>
+      currentBold.outerHTML = currentBold.innerHTML;
     }
 
-    // Bold the new text
     const newText = descriptions[newIndex];
     newText.innerHTML = `<b>${newText.innerHTML}</b>`;
 }
-

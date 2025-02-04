@@ -19,7 +19,7 @@
       <button>Luxury</button>
     </div>
     <div class="user-info">
-      <span style="font-weight: bold;">SkibidiRizzler</span>
+      <span style="font-weight: bold;" id="username">Loading...</span>
       <button>❤️</button>
       <button>🔔</button>
       <button>🛒</button>
@@ -120,59 +120,6 @@
 </main>
 
 <script type="module" src="home.js"></script>
-
-<script>
-  function scrollCarousel(button, direction) {
-    const carousel = button.closest('.product-card').querySelector('.carousel');
-    const scrollAmount = carousel.offsetWidth;
-    carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    const productCard = button.closest(".product-card");
-    const carouselItems = productCard.querySelectorAll(".carousel img, div:nth-of-type(n+5)"); // Combine images and descriptions
-    const descriptions = productCard.querySelectorAll("div:nth-of-type(n+5)");
-    const currentBold = productCard.querySelector("div:nth-of-type(n+5) b");
-    let currentIndex = Array.from(descriptions).indexOf(currentBold?.parentElement);
-
-    // Determine the new index
-    currentIndex = currentBold ? currentIndex : -1;
-    let newIndex = currentIndex + direction;
-
-    // Wrap around if out of bounds
-    if (newIndex >= descriptions.length) newIndex = 0;
-    if (newIndex < 0) newIndex = descriptions.length -1;
-
-    // Clear existing bolded text
-    if (currentBold) {
-      currentBold.outerHTML = currentBold.innerHTML; // Remove <b>
-    }
-
-    // Bold the new text
-    const newText = descriptions[newIndex];
-    newText.innerHTML = `<b>${newText.innerHTML}</b>`;
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.querySelector(".search-bar input");
-    const productCards = document.querySelectorAll(".product-card");
-
-    searchInput.addEventListener("input", function () {
-        const searchText = searchInput.value.toLowerCase();
-
-        productCards.forEach(card => {
-            const title = card.querySelector("div:nth-of-type(1) b")?.textContent.toLowerCase() || "";
-            const descriptions = Array.from(card.querySelectorAll(".description"))
-                .map(desc => desc.textContent.toLowerCase())
-                .join(" ");
-
-            if (title.includes(searchText) || descriptions.includes(searchText)) {
-                card.style.display = "flex"; // Show matching products
-            } else {
-                card.style.display = "none"; // Hide non-matching products
-            }
-        });
-    });
-});
-
-</script>
 
 </body>
 </html>
