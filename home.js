@@ -19,33 +19,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let allListings = []; // Store listings for sorting
+let allListings = [];
+let popularListings = [];
+let recentListings = [];
+let remainingListings = [];
 
-// Function to fetch user's name from Firestore
-async function fetchUserName(uid) {
-    const userDocRef = doc(db, "users", uid);
-    const userDocSnap = await getDoc(userDocRef);
+// ... (existing auth and user functions remain unchanged)
 
-    if (userDocSnap.exists()) {
-        return userDocSnap.data().name;
-    } else {
-        console.log("No user document found!");
-        return "Guest";
-    }
-}
-
-// Listen for auth state changes and update the username dynamically
-onAuthStateChanged(auth, async (user) => {
-    const userInfoElement = document.querySelector("#username");
-    if (user && userInfoElement) {
-        const userName = await fetchUserName(user.uid);
-        userInfoElement.textContent = userName;
-    } else if (userInfoElement) {
-        userInfoElement.textContent = "Guest";
-    }
-});
-
-// Load listings from Firestore and ensure products appear only once
 async function loadListings() {
     try {
         const querySnapshot = await getDocs(collection(db, "listings"));
@@ -54,68 +34,71 @@ async function loadListings() {
             ...doc.data()
         }));
 
-        // Sort all listings by creation date (newest first)
-        const sortedByDate = [...allListings].sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
-
-        // Get the top 3 viewed listings for "Popular Choice"
+        // Determine Popular Choices (top 3 by views)
         const sortedByViews = [...allListings].sort((a, b) => (b.views || 0) - (a.views || 0));
-        const popularListings = sortedByViews.slice(0, 3);
+        popularListings = sortedByViews.slice(0, 3);
 
-        // Remove popular listings from the Recently Listed pool
+        // Determine Recently Listed (next 5 by date, excluding Popular)
+        const sortedByDate = [...allListings].sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
         const remainingForRecent = sortedByDate.filter(listing => !popularListings.includes(listing));
+        recentListings = remainingForRecent.slice(0, 5);
+        remainingListings = remainingForRecent.slice(5);
 
-        // Get the first 5 remaining listings for "Recently Listed"
-        const recentListings = remainingForRecent.slice(0, 5);
-
-        // Render the "Popular Choices" section
-        renderListings(popularListings, ".section:nth-of-type(1) .product-grid");
-
-        // Render the "Recently Listed" section
-        renderListings(recentListings, ".section:nth-of-type(2) .product-grid");
-
-        // Apply the filter to the rest of the listings
-        const remainingListings = remainingForRecent.slice(5);
-        applyCurrentFilterAndRender(remainingListings);
+        applyCurrentFilterAndRender(); // Apply initial filter to all sections
 
     } catch (error) {
         console.error("Error fetching listings: ", error);
     }
 }
 
-// Apply the selected filter and render listings
-function applyCurrentFilterAndRender(listings) {
+function applyCurrentFilterAndRender() {
     const filter = document.getElementById('filter').value;
-    let sortedListings = [...listings];
 
-    if (sortedListings.length === 0) {
-        renderListings([]);
+    // Sort and render each section based on the current filter
+    renderSortedSection(popularListings, ".section:nth-of-type(1) .product-grid", filter);
+    renderSortedSection(recentListings, ".section:nth-of-type(2) .product-grid", filter);
+    renderSortedRemainingSection(remainingListings, ".section:nth-of-type(3) .product-grid", filter);
+}
+
+function renderSortedSection(listings, gridSelector, filter) {
+    const sorted = [...listings];
+    sortByFilter(sorted, filter);
+    renderListings(sorted, gridSelector);
+}
+
+function renderSortedRemainingSection(listings, gridSelector, filter) {
+    if (listings.length === 0) {
+        renderListings([], gridSelector);
         return;
     }
 
-    let topViewed = sortedListings.reduce((max, current) => 
-        (max.views || 0) > (current.views || 0) ? max : current, sortedListings[0]);
+    // Preserve topViewed product logic for the third section
+    const topViewed = [...listings].reduce((max, current) => 
+        (max.views || 0) > (current.views || 0) ? max : current, listings[0]);
+    const remaining = listings.filter(product => product !== topViewed);
+    
+    sortByFilter(remaining, filter);
+    const sorted = [topViewed, ...remaining];
+    renderListings(sorted, gridSelector);
+}
 
-    sortedListings = sortedListings.filter(product => product !== topViewed);
-
+function sortByFilter(listings, filter) {
     switch (filter) {
         case 'recent':
-            sortedListings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+            listings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
             break;
         case 'lowToHigh':
-            sortedListings.sort((a, b) => a.price - b.price);
+            listings.sort((a, b) => a.price - b.price);
             break;
         case 'highToLow':
-            sortedListings.sort((a, b) => b.price - a.price);
+            listings.sort((a, b) => b.price - a.price);
             break;
         case 'popular':
-            sortedListings.sort((a, b) => (b.views || 0) - (a.views || 0));
+            listings.sort((a, b) => (b.views || 0) - (a.views || 0));
             break;
         default:
-            sortedListings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+            listings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
     }
-
-    sortedListings.unshift(topViewed);
-    renderListings(sortedListings, ".section:nth-of-type(3) .product-grid");
 }
 
 // Render listings dynamically
@@ -139,6 +122,7 @@ function renderListings(listings, gridSelector) {
             <button class="buy-button">Buy Now</button>
         `;
 
+        // This is about the clicking into product, meaning more views
         productCard.addEventListener("click", async () => {
             try {
                 const listingRef = doc(db, "listings", listing.id);
@@ -196,5 +180,5 @@ document.addEventListener("DOMContentLoaded", async function () {
     await loadListings();
     
     const filterSelect = document.getElementById('filter');
-    filterSelect.addEventListener('change', () => applyCurrentFilterAndRender(allListings));
+    filterSelect.addEventListener('change', () => applyCurrentFilterAndRender());
 });
