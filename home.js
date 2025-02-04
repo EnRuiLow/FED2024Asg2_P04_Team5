@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
   authDomain: "p04-team5.firebaseapp.com",
   projectId: "p04-team5",
-  storageBucket: "p04-team5.firebasestorage.app",
+  storageBucket: "p04-team5.appspot.com",
   messagingSenderId: "88767932375",
   appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
   measurementId: "G-BKQ9JDGZ9G"
@@ -19,22 +19,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+let allListings = []; // Store listings for sorting
+
 // Function to fetch user's name from Firestore
 async function fetchUserName(uid) {
     const userDocRef = doc(db, "users", uid);
     const userDocSnap = await getDoc(userDocRef);
 
     if (userDocSnap.exists()) {
-        return userDocSnap.data().name; // Get 'name' field from Firestore
+        return userDocSnap.data().name;
     } else {
         console.log("No user document found!");
-        return "Guest"; // Default name if user data isn't found
+        return "Guest";
     }
 }
 
 // Listen for auth state changes and update the username dynamically
 onAuthStateChanged(auth, async (user) => {
-    const userInfoElement = document.querySelector("#username"); // Ensure the element has this ID in HTML
+    const userInfoElement = document.querySelector("#username");
     if (user && userInfoElement) {
         const userName = await fetchUserName(user.uid);
         userInfoElement.textContent = userName;
@@ -43,9 +45,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-let allListings = []; // Store listings for sorting
-
-// Modify loadListings to store data and apply initial filter
+// Load listings from Firestore and ensure products appear only once
 async function loadListings() {
     try {
         const querySnapshot = await getDocs(collection(db, "listings"));
@@ -53,20 +53,52 @@ async function loadListings() {
             id: doc.id,
             ...doc.data()
         }));
-        applyCurrentFilterAndRender(); // Initial render
+
+        // Sort all listings by creation date (newest first)
+        const sortedByDate = [...allListings].sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+
+        // Get the top 3 viewed listings for "Popular Choice"
+        const sortedByViews = [...allListings].sort((a, b) => (b.views || 0) - (a.views || 0));
+        const popularListings = sortedByViews.slice(0, 3);
+
+        // Remove popular listings from the Recently Listed pool
+        const remainingForRecent = sortedByDate.filter(listing => !popularListings.includes(listing));
+
+        // Get the first 5 remaining listings for "Recently Listed"
+        const recentListings = remainingForRecent.slice(0, 5);
+
+        // Render the "Popular Choices" section
+        renderListings(popularListings, ".section:nth-of-type(1) .product-grid");
+
+        // Render the "Recently Listed" section
+        renderListings(recentListings, ".section:nth-of-type(2) .product-grid");
+
+        // Apply the filter to the rest of the listings
+        const remainingListings = remainingForRecent.slice(5);
+        applyCurrentFilterAndRender(remainingListings);
+
     } catch (error) {
         console.error("Error fetching listings: ", error);
     }
 }
 
-// New function to handle sorting and rendering
-function applyCurrentFilterAndRender() {
+// Apply the selected filter and render listings
+function applyCurrentFilterAndRender(listings) {
     const filter = document.getElementById('filter').value;
-    const sortedListings = [...allListings]; // Create a copy
+    let sortedListings = [...listings];
+
+    if (sortedListings.length === 0) {
+        renderListings([]);
+        return;
+    }
+
+    let topViewed = sortedListings.reduce((max, current) => 
+        (max.views || 0) > (current.views || 0) ? max : current, sortedListings[0]);
+
+    sortedListings = sortedListings.filter(product => product !== topViewed);
 
     switch (filter) {
         case 'recent':
-            // Sort by createdAt (ensure your listings have this field)
             sortedListings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
             break;
         case 'lowToHigh':
@@ -76,18 +108,19 @@ function applyCurrentFilterAndRender() {
             sortedListings.sort((a, b) => b.price - a.price);
             break;
         case 'popular':
-            // Sort by views, using 0 as fallback for listings without views
             sortedListings.sort((a, b) => (b.views || 0) - (a.views || 0));
             break;
         default:
             sortedListings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
     }
-    renderListings(sortedListings);
+
+    sortedListings.unshift(topViewed);
+    renderListings(sortedListings, ".section:nth-of-type(3) .product-grid");
 }
 
-// Modified rendering function
-function renderListings(listings) {
-    const listingsContainer = document.querySelector(".product-grid");
+// Render listings dynamically
+function renderListings(listings, gridSelector) {
+    const listingsContainer = document.querySelector(gridSelector);
     listingsContainer.innerHTML = "";
 
     listings.forEach(listing => {
@@ -121,17 +154,8 @@ function renderListings(listings) {
         listingsContainer.appendChild(productCard);
     });
 }
-// Update DOMContentLoaded handler
-document.addEventListener("DOMContentLoaded", async function () {
-    await deleteExpiredListings();
-    await loadListings();
-    
-    // Add filter event listener
-    const filterSelect = document.getElementById('filter');
-    filterSelect.addEventListener('change', applyCurrentFilterAndRender);
-});
 
-// Delete expired listings when page loads
+// Delete expired listings
 async function deleteExpiredListings() {
     const now = new Date();
     const querySnapshot = await getDocs(collection(db, "listings"));
@@ -145,92 +169,32 @@ async function deleteExpiredListings() {
     });
 }
 
-// Run cleanup on page load
-document.addEventListener("DOMContentLoaded", function () {
-    loadListings();
-    deleteExpiredListings(); // Clean up expired listings
-});
-
 // Search functionality
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.querySelector(".search-bar input");
 
-    // Use event delegation, query all cards dynamically every time input changes
     searchInput.addEventListener("input", function () {
         const searchText = searchInput.value.toLowerCase();
-        const productCards = document.querySelectorAll(".product-card"); // Re-query all product cards
+        const productCards = document.querySelectorAll(".product-card");
 
         productCards.forEach(card => {
             const title = card.querySelector(".product-info h3")?.textContent.toLowerCase() || "";
             const description = card.querySelector(".description")?.textContent.toLowerCase() || "";
 
-            // Check if the title or description includes the search text
             if (title.includes(searchText) || description.includes(searchText)) {
-                card.style.display = "flex"; // Show matching products
+                card.style.display = "flex";
             } else {
-                card.style.display = "none"; // Hide non-matching products
+                card.style.display = "none";
             }
         });
     });
 });
 
-// Modify your productCard.addEventListener in renderListings
-productCard.addEventListener("click", async () => {
-    try {
-        // Increment views counter before redirecting
-        const listingRef = doc(db, "listings", listing.id);
-        await updateDoc(listingRef, {
-            views: increment(1)
-        });
-        window.location.href = `sellpage.html?id=${listing.id}`;
-    } 
-    catch (error) {
-        console.error("Error updating views: ", error);
-    }
+// Initialize and load listings on page load
+document.addEventListener("DOMContentLoaded", async function () {
+    await deleteExpiredListings();
+    await loadListings();
+    
+    const filterSelect = document.getElementById('filter');
+    filterSelect.addEventListener('change', () => applyCurrentFilterAndRender(allListings));
 });
-
-// Carousel scrolling functionality
-function scrollCarousel(button, direction) {
-    const carousel = button.closest('.product-card').querySelector('.carousel');
-    const scrollAmount = carousel.offsetWidth;
-    carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    const productCard = button.closest(".product-card");
-    const carouselItems = productCard.querySelectorAll(".carousel img, div:nth-of-type(n+5)");
-    const descriptions = productCard.querySelectorAll("div:nth-of-type(n+5)");
-    const currentBold = productCard.querySelector("div:nth-of-type(n+5) b");
-    let currentIndex = Array.from(descriptions).indexOf(currentBold?.parentElement);
-
-    currentIndex = currentBold ? currentIndex : -1;
-    let newIndex = currentIndex + direction;
-
-    if (newIndex >= descriptions.length) newIndex = 0;
-    if (newIndex < 0) newIndex = descriptions.length - 1;
-
-    if (currentBold) {
-      currentBold.outerHTML = currentBold.innerHTML;
-    }
-
-    const newText = descriptions[newIndex];
-    newText.innerHTML = `<b>${newText.innerHTML}</b>`;
-}
-
-
-
-// Function to render products
-function renderProducts(filteredProducts) {
-    const productGrid = document.getElementById("product-grid");
-    productGrid.innerHTML = ""; // Clear existing products
-  
-    filteredProducts.forEach(product => {
-      const productCard = document.createElement("div");
-      productCard.className = "product-card";
-      productCard.innerHTML = `
-        <h3>${product.name}</h3>
-        <p>Price: $${product.price}</p>
-        <p>Popularity: ${product.popularity}</p>
-      `;
-      productGrid.appendChild(productCard);
-    });
-  }
-
-  
