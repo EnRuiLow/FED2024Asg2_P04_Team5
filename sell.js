@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
   authDomain: "p04-team5.firebaseapp.com",
   projectId: "p04-team5",
-  storageBucket: "p04-team5.firebasestorage.app",
+  storageBucket: "p04-team5.appspot.com",
   messagingSenderId: "88767932375",
   appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
   measurementId: "G-BKQ9JDGZ9G"
@@ -37,10 +37,27 @@ sellForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  const title = titleInput.value;
-  const price = priceInput.value;
-  const description = descriptionInput.value;
-  const imageUrl = imageUrlInput.value;
+  const title = titleInput.value.trim();
+  const price = priceInput.value.trim();
+  const description = descriptionInput.value.trim();
+  const imageUrl = imageUrlInput.value.trim();
+
+  // Validate price format
+  const priceRegex = /^\d+(\.\d{1,2})?$/; // Allows 5, 5.9, 5.99
+  if (!priceRegex.test(price)) {
+    alert("Please enter a valid price with up to two decimal places (e.g., 5, 5.9, 5.99)");
+    return;
+  }
+
+  // Convert to float and validate numerical value
+  let priceNumber = parseFloat(price);
+  if (isNaN(priceNumber) || priceNumber <= 0) {
+    alert("Please enter a valid positive number for price");
+    return;
+  }
+
+  // Round to 2 decimal places
+  priceNumber = Math.round(priceNumber * 100) / 100;
 
   if (!imageUrl) {
     alert("Please provide an image URL.");
@@ -55,12 +72,12 @@ sellForm.addEventListener("submit", async (event) => {
     // Create a new listing with an expiry date
     await addDoc(collection(db, "listings"), {
       title: title,
-      price: parseFloat(price),
+      price: priceNumber,
       description: description,
       imageUrl: imageUrl,
       ownerId: user.uid,
       createdAt: serverTimestamp(),
-      expiresAt: Timestamp.fromDate(expiryDate) // Store expiry date in Firestore
+      expiresAt: Timestamp.fromDate(expiryDate)
     });
 
     alert("Item listed successfully!");
@@ -79,10 +96,3 @@ onAuthStateChanged(auth, (user) => {
     console.log("No user logged in");
   }
 });
-
-
-
-
-  
-
-  
