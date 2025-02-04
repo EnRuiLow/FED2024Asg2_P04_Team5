@@ -1,28 +1,38 @@
 <!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore Page</title>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Following</title>
-  <link rel="stylesheet" href="follow.css">
-</head>
-  <header> 
-    <div class="nav-buttons"> 
-      <button>MokeSell</button> 
-      <button>Fashion</button> 
-      <button>Electronics</button> 
-      <button>Luxury</button> 
-    </div> 
-    <div class="user-info"> 
-      <span style="font-weight: bold;">SkibidiRizzler</span> 
-      <button>❤️</button> 
-      <button>🔔</button> 
-      <button>🛒</button> 
-      <button onclick="window.location.href='Chat.html'">💬</button> 
-      <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button> 
-    </div> 
-  </header>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Page</title>
+    <link rel="stylesheet" href="follow.css">
+  </head>
+<body>
 
-  <script src="follow.js"></script>
-</html>
+  <header>
+    <div class="nav-buttons">
+      <button>MokeSell</button>
+      <button>Fashion</button>
+      <button>Electronics</button>
+      <button>Luxury</button>
+    </div>
+    <div class="user-info">
+      <span style="font-weight: bold;" id="username">Loading...</span>
+      <button onclick="window.location.href='follow.html'">❤️</button>
+      <button>🔔</button>
+      <button>🛒</button>
+      <button onclick="window.location.href='Chat.html'">💬</button>
+      <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button>
+    </div>
+  </header>
   
+<div class="search-bar">
+  <input type="text" placeholder="Search for an item">
+</div>
+
+<script type="module" src="follow.js"></script>
+
+</body>
+</html>
