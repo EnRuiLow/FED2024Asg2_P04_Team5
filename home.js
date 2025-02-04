@@ -43,42 +43,86 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Function to fetch and display listings
-async function loadListings() {
-    const listingsContainer = document.querySelector(".product-grid"); // Adjust selector if needed
-    listingsContainer.innerHTML = ""; // Clear existing products
+let allListings = []; // Store listings for sorting
 
+// Modify loadListings to store data and apply initial filter
+async function loadListings() {
     try {
         const querySnapshot = await getDocs(collection(db, "listings"));
-        querySnapshot.forEach((docSnapshot) => {
-            const data = docSnapshot.data();
-            const productCard = document.createElement("div");
-            productCard.classList.add("product-card");
-
-            // Add product card HTML structure
-            productCard.innerHTML = `
-                <div class="carousel">
-                    <img src="${data.imageUrl}" alt="${data.title}" onerror="this.src='placeholder.jpg'">
-                </div>
-                <div class="product-info">
-                    <h3>${data.title}</h3>
-                    <p>$${data.price.toFixed(2)}</p>
-                    <p class="description">${data.description}</p>
-                </div>
-                <button class="buy-button">Buy Now</button>
-            `;
-
-            // Set up click event for redirecting to the 'sellpage.html' with product ID
-            productCard.addEventListener("click", function () {
-                window.location.href = `sellpage.html?id=${docSnapshot.id}`;
-            });
-
-            listingsContainer.appendChild(productCard);
-        });
+        allListings = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        applyCurrentFilterAndRender(); // Initial render
     } catch (error) {
         console.error("Error fetching listings: ", error);
     }
 }
+
+// New function to handle sorting and rendering
+function applyCurrentFilterAndRender() {
+    const filter = document.getElementById('filter').value;
+    const sortedListings = [...allListings]; // Create a copy
+
+    switch (filter) {
+        case 'recent':
+            // Sort by createdAt (ensure your listings have this field)
+            sortedListings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+            break;
+        case 'lowToHigh':
+            sortedListings.sort((a, b) => a.price - b.price);
+            break;
+        case 'highToLow':
+            sortedListings.sort((a, b) => b.price - a.price);
+            break;
+        case 'popular':
+            // Sort by popularity (ensure your listings have this field)
+            sortedListings.sort((a, b) => b.popularity - a.popularity);
+            break;
+        default:
+            sortedListings.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+    }
+    renderListings(sortedListings);
+}
+
+// Modified rendering function
+function renderListings(listings) {
+    const listingsContainer = document.querySelector(".product-grid");
+    listingsContainer.innerHTML = "";
+
+    listings.forEach(listing => {
+        const productCard = document.createElement("div");
+        productCard.classList.add("product-card");
+        
+        productCard.innerHTML = `
+            <div class="carousel">
+                <img src="${listing.imageUrl}" alt="${listing.title}" onerror="this.src='placeholder.jpg'">
+            </div>
+            <div class="product-info">
+                <h3>${listing.title}</h3>
+                <p>$${listing.price.toFixed(2)}</p>
+                <p class="description">${listing.description}</p>
+            </div>
+            <button class="buy-button">Buy Now</button>
+        `;
+
+        productCard.addEventListener("click", () => {
+            window.location.href = `sellpage.html?id=${listing.id}`;
+        });
+
+        listingsContainer.appendChild(productCard);
+    });
+}
+
+// Update DOMContentLoaded handler
+document.addEventListener("DOMContentLoaded", async function () {
+    await deleteExpiredListings();
+    await loadListings();
+    
+    // Add filter event listener
+    const filterSelect = document.getElementById('filter');
+    filterSelect.addEventListener('change', applyCurrentFilterAndRender);
+});
 
 // Delete expired listings when page loads
 async function deleteExpiredListings() {
@@ -147,3 +191,24 @@ function scrollCarousel(button, direction) {
     const newText = descriptions[newIndex];
     newText.innerHTML = `<b>${newText.innerHTML}</b>`;
 }
+
+
+
+// Function to render products
+function renderProducts(filteredProducts) {
+    const productGrid = document.getElementById("product-grid");
+    productGrid.innerHTML = ""; // Clear existing products
+  
+    filteredProducts.forEach(product => {
+      const productCard = document.createElement("div");
+      productCard.className = "product-card";
+      productCard.innerHTML = `
+        <h3>${product.name}</h3>
+        <p>Price: $${product.price}</p>
+        <p>Popularity: ${product.popularity}</p>
+      `;
+      productGrid.appendChild(productCard);
+    });
+  }
+
+  

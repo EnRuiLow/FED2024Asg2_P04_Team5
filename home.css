@@ -214,3 +214,21 @@
   .carousel-button:hover {
     background-color: rgba(0, 0, 0, 0.7);
   }
+
+  .filter-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .filter-section h2 {
+    margin: 0;
+  }
+  
+  #filter {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }

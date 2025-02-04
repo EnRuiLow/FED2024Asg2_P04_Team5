@@ -23,80 +23,43 @@
       <button onclick="window.location.href='follow.html'">❤️</button>
       <button>🔔</button>
       <button>🛒</button>
-      <button onclick="window.location.href='chat.html'">💬</button>
+      <button onclick="window.location.href='Chat.html'">💬</button>
       <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button>
     </div>
   </header>
   
-<div class="search-bar">
-  <input type="text" placeholder="Search for an item">
-</div>
-
-<main>
-  <div class="section">
-    <h2>Recently listed</h2>
-    <div class="product-grid">
-      <!-- Product 1 -->
-      <div class="product-card">
-        <div class="carousel">
-          
-        </div>
-        <div class="carousel-buttons">
-          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
-          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
-        </div>
-        
-      </div>
-
-      <!-- Product 2 -->
-      <div class="product-card">
-        <div class="carousel">
-          
-        </div>
-        <div class="carousel-buttons">
-          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
-          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
-        </div>
-      </div>
-
-      <!-- Product 3 -->
-      <div class="product-card">
-        <div class="carousel">
-          
-        </div>
-        <div class="carousel-buttons">
-          <button class="carousel-button" onclick="scrollCarousel(this, -1)">❮</button>
-          <button class="carousel-button" onclick="scrollCarousel(this, 1)">❯</button>
-        </div>
-        
-      </div>
-    </div>
+  <div class="search-bar">
+    <input type="text" placeholder="Search for an item">
   </div>
 
-  <div class="section">
-    <h2>Recommended for you</h2>
-    <div class="product-grid">
-      <div class="product-card">
-        
+  <main>
+    <div class="section">
+      <div class="filter-section">
+        <h2>Recently listed</h2>
+        <select id="filter" onchange="filterProducts()">
+          <option value="recent">Recently Listed</option>
+          <option value="lowToHigh">Price: Low to High</option>
+          <option value="highToLow">Price: High to Low</option>
+          <option value="popular">Most Popular</option>
+        </select>
       </div>
-      <div class="product-card">
-          
-      </div>
-      <div class="product-card">
-        
-      </div>
-      <div class="product-card">
-        
-      </div>
-      <div class="product-card">
-        
+      <div class="product-grid" id="product-grid">
+        <!-- Product cards will be dynamically inserted here -->
       </div>
     </div>
-  </div>
-</main>
 
-<script type="module" src="home.js"></script>
+    <div class="section">
+      <h2>Recommended for you</h2>
+      <div class="product-grid">
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+      </div>
+    </div>
+  </main>
 
+  <script type="module" src="home.js"></script>
 </body>
 </html>
-
