@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile</title>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="sellerprofile.css">
+  </head>
+<body>
+
+  <header>
+    <div class="nav-buttons">
+      <button onclick="window.location.href='home.html'">MokeSell</button>
+      <button>Fashion</button>
+      <button>Electronics</button>
+      <button>Luxury</button>
+    </div>
+    <div class="user-info">
+      <button class="username-button" id="username" onclick="window.location.href='profile.html'">Loading...</button>
+      <button onclick="window.location.href='follow.html'">❤️</button>
+      <button>🔔</button>
+      <button>🛒</button>
+      <button onclick="window.location.href='chat.html'">💬</button>
+      <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button>
+    </div>
+  </header>
+  
+  <main class="profile-container">
+    <!-- Left Column (Profile Card) -->
+    <div class="profile-column">
+        <div class="profile-card">
+            <div class="profile-picture-container">
+                <div class="profile-picture" id="profilePicture">
+                    <div class="default-avatar"></div>
+                    <input type="file" id="profilePictureUpload" accept="image/*" style="display: none;">
+                    <button onclick="document.getElementById('profilePictureUpload').click()">Upload Picture</button>
+                </div>
+                <div class="profile-info">
+                    <h1 id="profileUsername">Loading...</h1>
+                    <p id="profileEmail" class="profile-email">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column (Listings) -->
+    <div class="listings-column">
+        <h2>Your Listings</h2>
+        <div class="listings-container" id="userListings">
+            <!-- Listings will be dynamically inserted here -->
+        </div>
+    </div>
+  </main>
+
+
+  <script type="module" src="sellerprofile.js"></script>
+
+  
+</body>
+</html>
+
