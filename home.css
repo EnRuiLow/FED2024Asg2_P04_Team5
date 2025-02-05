@@ -232,3 +232,73 @@
     border-radius: 5px;
     border: 1px solid #ccc;
   }
+
+  @media only screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .nav-buttons button {
+        flex: 1;
+        margin: 0 2px;
+        font-size: 0.9rem;
+        padding: 5px;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .user-info button {
+        margin: 0 2px;
+        padding: 5px;
+        font-size: 0.9rem;
+    }
+
+    .search-bar {
+        margin: 10px;
+    }
+
+    .search-bar input {
+        padding: 8px;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr !important; /* One product per row */
+        gap: 10px;
+    }
+
+    .product-card {
+        height: auto;
+        padding: 15px;
+    }
+
+    .product-card img {
+        max-height: 120px;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-section h2 {
+        margin-bottom: 10px;
+    }
+
+    #filter {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
