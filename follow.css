@@ -83,6 +83,21 @@ header {
   border-radius: 5px;
 }
 
+.user-info .username-button {
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 7px;
+  margin: 0 5px;
+  color: #333;
+}
+
+.user-info .username-button:hover {
+  text-decoration: underline;
+  background: none;
+}
+
 /* Mobile-specific styles */
 @media only screen and (max-width: 768px) {
   header {
@@ -115,6 +130,12 @@ header {
     margin: 0 2px; /* Reduce margin between buttons */
     padding: 5px; /* Reduce padding */
     font-size: 0.9rem; /* Slightly smaller font size */
+  }
+
+  .user-info .username-button {
+    margin: 0 2px;
+    padding: 5px;
+    font-size: 0.9rem;
   }
 
   .search-bar {
