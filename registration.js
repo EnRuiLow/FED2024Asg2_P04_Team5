@@ -39,8 +39,8 @@ document.getElementById('registerForm').addEventListener('submit', async functio
       uid: userCredential.user.uid,
       name: name,
       email: email,
-      password: password
-    });
+      password: password,
+  });
 
     alert('Registration successful!');
     window.location.href = 'index.html'; // Redirect to login page

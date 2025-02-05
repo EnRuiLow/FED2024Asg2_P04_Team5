@@ -63,17 +63,27 @@ async function fetchUserEmail(uid) {
 
 // Function to fetch user profile data
 async function fetchUserProfile(uid) {
-    const userDocRef = doc(db, "users", uid);
-    const userDocSnap = await getDoc(userDocRef);
+    // First check the new 'profile' collection
+    const profileDocRef = doc(db, "profile", uid);
+    const profileDocSnap = await getDoc(profileDocRef);
     
-    console.log("Fetched user data:", userDocSnap.data()); // Add this line
-    
-    if (userDocSnap.exists()) {
-        return userDocSnap.data();
-    } else {
-        console.log("No user document found!");
+    // If profile doesn't exist, create it from user data
+    if (!profileDocSnap.exists()) {
+        const userDocRef = doc(db, "users", uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+            // Created profile doc with empty profilePicture
+            await setDoc(profileDocRef, {
+                name: userDocSnap.data().name,
+                email: userDocSnap.data().email,
+                profilePicture: ""
+            });
+            return { ...userDocSnap.data(), profilePicture: "" };
+        }
         return null;
     }
+    return profileDocSnap.data();
 }
 
 // Function to update the profile information in the DOM
@@ -113,9 +123,8 @@ function displayProfile(userData) {
         profilePicture.innerHTML = `<img src="${userData.profilePicture}" alt="Profile Picture">`;
     } else {
         profilePicture.innerHTML = `
-            <div class="default-avatar"></div>
-            <input type="file" id="profilePictureUpload" accept="image/*" style="display: none;">
-            <button onclick="document.getElementById('profilePictureUpload').click()">Upload Picture</button>
+        <div class="default-avatar"></div>
+        <input type="file" id="profilePictureUpload" accept="image/*" style="display: none;">
         `;
         setupProfilePictureUpload();
     }
@@ -161,22 +170,20 @@ function setupProfilePictureUpload() {
         }
 
         try {
-            // Create a reference to the user's profile picture in Firebase Storage
-            const storageRef = ref(storage, `profile-pictures/${user.uid}`);
-
-            // Upload the new file to Firebase Storage (this will overwrite the existing file)
+            // Optional: Add file type validation here (e.g., image/*)
+            const storageRef = ref(storage, `profile-pictures/${user.uid}/${file.name}`);
             await uploadBytes(storageRef, file);
-
-            // Get the download URL of the uploaded file
             const downloadURL = await getDownloadURL(storageRef);
 
-            // Update the user's profile in Firestore with the new profile picture URL
-            const userDocRef = doc(db, "users", user.uid);
-            await setDoc(userDocRef, { profilePicture: downloadURL }, { merge: true });
+            // Update Firestore
+            const profileDocRef = doc(db, "profile", user.uid);
+            await updateDoc(profileDocRef, { profilePicture: downloadURL });
 
-            // Update the profile picture display in the DOM
+            // Update UI
             const profilePicture = document.getElementById('profilePicture');
-            profilePicture.innerHTML = `<img src="${downloadURL}" alt="Profile Picture">`;
+            if (profilePicture) {
+                profilePicture.innerHTML = `<img src="${downloadURL}" alt="Profile Picture">`;
+            }
 
             alert("Profile picture updated successfully!");
         } catch (error) {
