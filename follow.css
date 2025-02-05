@@ -68,17 +68,60 @@ header {
   background: #ccc;
 }
 
-  .search-bar {
+.search-bar {
+  padding: 10px;
+  background-color: #fff;
+  margin: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Mobile-specific styles */
+@media only screen and (max-width: 768px) {
+  header {
+    flex-direction: column; /* Stack header content vertically */
+    align-items: flex-start; /* Align items to the left */
     padding: 10px;
-    background-color: #fff;
-    margin: 10px 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between; /* Space buttons evenly */
+    width: 100%; /* Full width */
+    margin-bottom: 10px; /* Add space below buttons */
+  }
+
+  .nav-buttons button {
+    flex: 1; /* Make buttons take equal space */
+    margin: 0 2px; /* Reduce margin between buttons */
+    font-size: 0.9rem; /* Slightly smaller font size */
+    padding: 5px; /* Reduce padding */
+  }
+
+  .user-info {
+    width: 100%; /* Full width */
+    justify-content: space-between; /* Space buttons evenly */
+    margin-top: 10px; /* Add space above user info */
+  }
+
+  .user-info button {
+    margin: 0 2px; /* Reduce margin between buttons */
+    padding: 5px; /* Reduce padding */
+    font-size: 0.9rem; /* Slightly smaller font size */
+  }
+
+  .search-bar {
+    margin: 10px; /* Adjust margin for mobile */
   }
 
   .search-bar input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 8px; /* Slightly smaller padding */
   }
+}
