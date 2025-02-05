@@ -68,21 +68,6 @@
     background: #ccc;
   }
 
-  .search-bar {
-    padding: 10px;
-    background-color: #fff;
-    margin: 10px 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-
-  .search-bar input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
   main {
     padding: 20px;
   }
@@ -233,6 +218,110 @@
     border: 1px solid #ccc;
   }
 
+/* Add these new styles */
+.profile-picture-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #ddd;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+    text-align: center;
+}
+
+.profile-email {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.upload-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.upload-section button {
+    padding: 8px 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload-section button:hover {
+    background: #0056b3;
+}
+
+/* Update existing styles */
+.profile-container {
+    display: flex;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.listings-column {
+    flex: 3;
+}
+
+.profile-column {
+    flex: 1;
+}
+
+/* Listing card updates */
+.listing-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.listing-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.listing-content {
+    flex: 1;
+}
+
+.listing-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+}
+
+.listing-content p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
   @media only screen and (max-width: 768px) {
     header {
         flex-direction: column;
@@ -266,14 +355,6 @@
         font-size: 0.9rem;
     }
 
-    .search-bar {
-        margin: 10px;
-    }
-
-    .search-bar input {
-        padding: 8px;
-    }
-
     .product-grid {
         grid-template-columns: 1fr !important; /* One product per row */
         gap: 10px;
@@ -300,5 +381,16 @@
     #filter {
         width: 100%;
         margin-top: 10px;
+    }
+    .profile-container {
+        flex-direction: column;
+    }
+    
+    .profile-column {
+        order: -1;
+    }
+    
+    .profile-card {
+        position: static;
     }
 }
