@@ -37,16 +37,24 @@
             <img id="sellerProfilePicture" src="" class="profile-picture">
           </div>
           <div class="seller-info">
-            <p>Seller: <span id="Name" id="sellerProfileLink"></span></p>
-            <p>Rating: <span id="sellerRating"></span> <span id="sellerReviews"></span></p>
+            <p>Seller: 
+                <a id="sellerProfileLink" href="#">Loading...</a>
+            </p>
+            <p>Rating: <span id="sellerRating"></span> (<span id="sellerReviews"></span> reviews)</p>
             <button id="chatButton">Chat with Seller</button>
-          </div>
+        </div>
+        
+        <!-- Add profile email element -->
+        <div class="profile-info">
+            <h1 id="profileUsername"></h1>
+            <p id="profileEmail" class="profile-email"></p>
+        </div>
         </div>
     </div>
 
     <!-- Right Column (Listings) -->
     <div class="listings-column">
-        <h2>Your Listings</h2>
+        <h2>Their Listings</h2>
         <div class="listings-container" id="userListings">
             <!-- Listings will be dynamically inserted here -->
         </div>
@@ -54,7 +62,7 @@
   </main>
 
 
-  <script type="module" src="sellerprofile.js"></script>
+<script type="module" src="sellerprofile.js"></script>
 
   
 </body>

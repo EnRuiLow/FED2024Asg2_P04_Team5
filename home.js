@@ -206,3 +206,4 @@ document.addEventListener("DOMContentLoaded", async function () {
     const filterSelect = document.getElementById('filter');
     filterSelect.addEventListener('change', () => applyCurrentFilterAndRender());
 });
+

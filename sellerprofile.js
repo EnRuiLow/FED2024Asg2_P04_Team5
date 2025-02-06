@@ -7,6 +7,10 @@ import {
     getFirestore, 
     doc, 
     getDoc,
+    collection,
+    query,
+    where,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -23,81 +27,106 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Get the owner ID from the URL
-const urlParams = new URLSearchParams(window.location.search);
-const ownerId = urlParams.get('ownerId');  // Use 'ownerId' instead of 'id'
+// Debugging: Log the full URL and search parameters
 console.log("Full URL:", window.location.href);
 console.log("URL Search Params:", window.location.search);
+
+// Get the owner ID from the URL
+const urlParams = new URLSearchParams(window.location.search);
+const ownerId = urlParams.get('ownerId');
+
+// Debugging: Log the ownerId
 console.log("Owner ID from URL:", ownerId);
-console.log("Owner ID:", ownerId);
 
+if (!ownerId) {
+    console.error("No ownerId found in URL parameters");
+    alert("Seller profile cannot be loaded. Missing owner ID.");
+    window.location.href = "home.html"; // Redirect to home or another page
+}
 
-// Function to fetch seller details from Firestore
-async function fetchListingDetails() {
-    const docRef = doc(db, "listings", listingId);
-    const docSnap = await getDoc(docRef);
+// Fetch seller's profile details from Firestore
+async function fetchSellerDetails(ownerId) {
+    const sellerRef = doc(db, "profile", ownerId);
+    const sellerSnap = await getDoc(sellerRef);
 
-    if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("listingTitle").innerText = data.title;
-        document.getElementById("listingPrice").innerText = `S$${data.price}`;
-        document.getElementById("listingDescription").innerText = data.description;
-        document.getElementById("listingImage").src = data.imageUrl;
-
-        // Fetch seller details
-        sellerId = data.ownerId; // Store seller ID
-        const sellerRef = doc(db, "profile", sellerId); // Ensure collection name is "profile"
-        const sellerSnap = await getDoc(sellerRef);
-
-        if (sellerSnap.exists()) {
-            const sellerData = sellerSnap.data();
-
-            // Update seller info
-            const sellerNameElement = document.getElementById("sellerName");
-            const sellerProfileLink = document.getElementById("sellerProfileLink");
-
-            sellerNameElement.textContent = sellerData.name || `@${sellerId}`; // Set seller name
-            sellerProfileLink.href = `sellerprofile.html?ownerId=${sellerId}`; // Set profile link
-            document.getElementById("sellerRating").textContent = sellerData.rating || "N/A";
-            document.getElementById("sellerReviews").textContent = sellerData.reviews || 0;
-        } else {
-            console.error("Seller profile not found.");
-        }
+    if (sellerSnap.exists()) {
+        return sellerSnap.data();
     } else {
-        alert("Listing not found.");
-        window.location.href = "index.html";
+        console.error("Seller profile not found.");
+        return null;
     }
 }
 
-// Function to display seller details in the profile section
+// Fetch seller's listings from Firestore
+async function fetchSellerListings(ownerId) {
+    const listingsRef = collection(db, "listings");
+    const q = query(listingsRef, where("ownerId", "==", ownerId));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+// Display seller's profile information
 function displaySellerProfile(sellerData) {
     const profileUsername = document.getElementById('profileUsername');
     const profileEmail = document.getElementById('profileEmail');
-    const profilePicture = document.getElementById('profilePicture');
+    const sellerProfilePicture = document.getElementById('sellerProfilePicture');
+    const sellerProfileLink = document.getElementById('sellerProfileLink');
     const sellerRating = document.getElementById('sellerRating');
     const sellerReviews = document.getElementById('sellerReviews');
 
     if (sellerData) {
         profileUsername.textContent = sellerData.name || "Seller Name Not Found";
         profileEmail.textContent = sellerData.email || "No email provided";
-        profilePicture.src = sellerData.profilePicture || "default-avatar.jpg";
+        sellerProfilePicture.src = sellerData.profilePicture || "default-avatar.jpg";
+        sellerProfileLink.textContent = sellerData.name || `@${ownerId}`;
+        sellerProfileLink.href = `sellerprofile.html?ownerId=${ownerId}`;
         sellerRating.textContent = sellerData.rating || "N/A";
-        sellerReviews.textContent = sellerData.reviews || 0;
+        sellerReviews.textContent = sellerData.reviews || "0";
     } else {
         profileUsername.textContent = "Seller Not Found";
         profileEmail.textContent = "No email provided";
+        sellerProfilePicture.src = "default-avatar.jpg";
+        sellerProfileLink.textContent = "Seller Not Found";
     }
 }
 
-// Fetch and display seller details when the page loads
+// Display seller's listings
+function displayListings(listings) {
+    const container = document.getElementById('userListings');
+    container.innerHTML = '';
+
+    if (listings.length === 0) {
+        container.innerHTML = '<p>No listings found.</p>';
+        return;
+    }
+
+    listings.forEach(listing => {
+        const listingHTML = `
+            <div class="listing-card">
+                <img src="${listing.imageUrl || 'placeholder-image.jpg'}" class="listing-icon" alt="Listing">
+                <div class="listing-content">
+                    <h3>${listing.title}</h3>
+                    <p>${listing.description}</p>
+                    <p>Price: S$${listing.price}</p>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', listingHTML);
+    });
+}
+
+// Load seller profile and listings
 async function loadSellerProfile() {
-    if (ownerId) {  // Use ownerId directly
+    if (ownerId) {
         const sellerData = await fetchSellerDetails(ownerId);
         displaySellerProfile(sellerData);
+
+        const listings = await fetchSellerListings(ownerId);
+        displayListings(listings);
     }
 }
 
-// Listen for auth state changes (optional, if you need to handle authentication)
+// Check auth state (optional)
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("User is logged in:", user.uid);

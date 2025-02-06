@@ -40,7 +40,6 @@ const storage = getStorage(app);
 async function fetchUserName(uid) {
     const userDocRef = doc(db, "users", uid);
     const userDocSnap = await getDoc(userDocRef);
-
     if (userDocSnap.exists()) {
         return userDocSnap.data().name; // Get 'name' field from Firestore
     } else {
@@ -119,12 +118,13 @@ async function fetchUserListings(uid) {
     const q = query(listingsRef, where("userId", "==", uid));
     const querySnapshot = await getDocs(q);
     
-    const listings = [];
-    querySnapshot.forEach((doc) => {
-        listings.push({ id: doc.id, ...doc.data() });
-    });
-    return listings;
-}
+    console.log('Listings query results:', querySnapshot.docs.map(doc => doc.data()));
+    
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  }
 
 // Function to display profile information
 function displayProfile(userData) {
@@ -136,7 +136,7 @@ function displayProfile(userData) {
     profileEmail.textContent = userData.email || 'No email provided';
 
     if (userData.profilePicture) {
-        profilePicture.innerHTML = `<img src="${userData.profilePicture}" alt="Profile Picture">`;
+        profilePicture.innerHTML = `<img src="${userData.profilePicture}">`;
     } else {
         profilePicture.innerHTML = `<div class="default-avatar"></div>`;
     }

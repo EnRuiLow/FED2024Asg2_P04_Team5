@@ -69,15 +69,15 @@ async function fetchListingDetails() {
         const sellerRef = doc(db, "users", sellerId);
         const sellerSnap = await getDoc(sellerRef);
 
+       
         if (sellerSnap.exists()) {
             const sellerData = sellerSnap.data();
             const sellerLink = document.getElementById("sellerProfileLink");
             document.getElementById("sellerName").innerText = sellerData.name || `@${sellerId}`;
             sellerLink.textContent = sellerData.name || `@${sellerId}`;
-            sellerLink.href = `sellerprofile.html?ownerId=${sellerId}`;  // Dynamic URL
+            sellerLink.href = `sellerprofile.html?ownerId=${sellerId}`;  // Ensure this line is correct
             document.getElementById("sellerRating").textContent = sellerData.rating || "N/A";
             document.getElementById("sellerReviews").textContent = sellerData.reviews || 0;
-            
         }
     } else {
         alert("Listing not found.");
