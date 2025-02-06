@@ -71,13 +71,17 @@ async function fetchListingDetails() {
 
         if (sellerSnap.exists()) {
             const sellerData = sellerSnap.data();
+            const sellerLink = document.getElementById("sellerProfileLink");
             document.getElementById("sellerName").innerText = sellerData.name || `@${sellerId}`;
-            document.getElementById("sellerRating").innerText = sellerData.rating || "N/A";
-            document.getElementById("sellerReviews").innerText = sellerData.reviews || 0;
+            sellerLink.textContent = sellerData.name || `@${sellerId}`;
+            sellerLink.href = `sellerprofile.html?ownerId=${sellerId}`;  // Dynamic URL
+            document.getElementById("sellerRating").textContent = sellerData.rating || "N/A";
+            document.getElementById("sellerReviews").textContent = sellerData.reviews || 0;
+            
         }
     } else {
         alert("Listing not found.");
-        window.location.href = "index.html";
+        window.location.href = "home.html";
     }
 }
 

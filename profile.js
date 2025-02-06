@@ -8,6 +8,7 @@ import {
     doc, 
     getDoc, 
     setDoc, 
+    updateDoc, // Ensure this is imported
     collection, 
     query, 
     where, 
@@ -86,6 +87,21 @@ async function fetchUserProfile(uid) {
     return profileDocSnap.data();
 }
 
+
+document.getElementById("toggleInputBtn").addEventListener("click", function () {
+    const inputField = document.getElementById("profilePictureUrl");
+    const saveButton = document.getElementById("saveProfilePictureUrl");
+
+    // Toggle display between 'none' and 'block'
+    if (inputField.style.display === "none") {
+        inputField.style.display = "block";
+        saveButton.style.display = "block";
+    } else {
+        inputField.style.display = "none";
+        saveButton.style.display = "none";
+    }
+});
+
 // Function to update the profile information in the DOM
 async function updateProfileInfo(uid) {
     const userData = await fetchUserProfile(uid);
@@ -122,13 +138,50 @@ function displayProfile(userData) {
     if (userData.profilePicture) {
         profilePicture.innerHTML = `<img src="${userData.profilePicture}" alt="Profile Picture">`;
     } else {
-        profilePicture.innerHTML = `
-        <div class="default-avatar"></div>
-        <input type="file" id="profilePictureUpload" accept="image/*" style="display: none;">
-        `;
-        setupProfilePictureUpload();
+        profilePicture.innerHTML = `<div class="default-avatar"></div>`;
     }
 }
+
+// Function to handle profile picture URL updates
+async function saveProfilePictureUrl() {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("You must be logged in to update your profile picture.");
+        return;
+    }
+
+    const urlInput = document.getElementById('profilePictureUrl');
+    const newUrl = urlInput.value.trim();
+
+    if (!newUrl) {
+        alert("Please enter a valid URL.");
+        return;
+    }
+
+    try {
+        // Simple URL validation
+        new URL(newUrl);
+        
+        // Update Firestore
+        const profileDocRef = doc(db, "profile", user.uid);
+        await updateDoc(profileDocRef, { profilePicture: newUrl });
+
+        // Update UI
+        const profilePicture = document.getElementById('profilePicture');
+        if (profilePicture) {
+            profilePicture.innerHTML = `<img src="${newUrl}" alt="Profile Picture">`;
+        }
+
+        urlInput.value = ''; // Clear input
+        alert("Profile picture updated successfully!");
+    } catch (error) {
+        console.error("Error updating profile picture:", error);
+        alert("Invalid URL or update failed. Please try again.");
+    }
+}
+
+// Add event listener for the save button
+document.getElementById('saveProfilePictureUrl')?.addEventListener('click', saveProfilePictureUrl);
 
 // Function to display user listings
 function displayListings(listings) {
@@ -151,45 +204,6 @@ function displayListings(listings) {
             </div>
         `;
         container.insertAdjacentHTML('beforeend', listingHTML);
-    });
-}
-
-// Function to handle profile picture upload
-function setupProfilePictureUpload() {
-    const uploadInput = document.getElementById('profilePictureUpload');
-    if (!uploadInput) return;
-
-    uploadInput.addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const user = auth.currentUser;
-        if (!user) {
-            alert("You must be logged in to upload a profile picture.");
-            return;
-        }
-
-        try {
-            // Optional: Add file type validation here (e.g., image/*)
-            const storageRef = ref(storage, `profile-pictures/${user.uid}/${file.name}`);
-            await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(storageRef);
-
-            // Update Firestore
-            const profileDocRef = doc(db, "profile", user.uid);
-            await updateDoc(profileDocRef, { profilePicture: downloadURL });
-
-            // Update UI
-            const profilePicture = document.getElementById('profilePicture');
-            if (profilePicture) {
-                profilePicture.innerHTML = `<img src="${downloadURL}" alt="Profile Picture">`;
-            }
-
-            alert("Profile picture updated successfully!");
-        } catch (error) {
-            console.error("Error uploading profile picture:", error);
-            alert("Failed to upload profile picture. Please try again.");
-        }
     });
 }
 

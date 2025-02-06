@@ -7,9 +7,7 @@ import {
     getFirestore, 
     doc, 
     getDoc,
-    collection // Add this import
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
@@ -25,50 +23,49 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Get the seller ID from the URL
+// Get the owner ID from the URL
 const urlParams = new URLSearchParams(window.location.search);
-const sellerId = urlParams.get('id');
-console.log("Seller ID from URL:", sellerId);
+const ownerId = urlParams.get('ownerId');  // Use 'ownerId' instead of 'id'
+console.log("Full URL:", window.location.href);
+console.log("URL Search Params:", window.location.search);
+console.log("Owner ID from URL:", ownerId);
+console.log("Owner ID:", ownerId);
 
-if (!sellerId) {
-    alert("Invalid seller ID.");
-    window.location.href = "home.html"; // Redirect to home page if no seller ID is provided
-}
 
 // Function to fetch seller details from Firestore
-async function fetchSellerDetails(listingId) {
-    try {
-        // 1. Get the listing document
-        const listingDocRef = doc(db, "listings", listingId);
-        const listingDocSnap = await getDoc(listingDocRef);
+async function fetchListingDetails() {
+    const docRef = doc(db, "listings", listingId);
+    const docSnap = await getDoc(docRef);
 
-        if (!listingDocSnap.exists()) {
-            console.error("Listing not found for ID:", listingId);
-            return null;
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("listingTitle").innerText = data.title;
+        document.getElementById("listingPrice").innerText = `S$${data.price}`;
+        document.getElementById("listingDescription").innerText = data.description;
+        document.getElementById("listingImage").src = data.imageUrl;
+
+        // Fetch seller details
+        sellerId = data.ownerId; // Store seller ID
+        const sellerRef = doc(db, "profile", sellerId); // Ensure collection name is "profile"
+        const sellerSnap = await getDoc(sellerRef);
+
+        if (sellerSnap.exists()) {
+            const sellerData = sellerSnap.data();
+
+            // Update seller info
+            const sellerNameElement = document.getElementById("sellerName");
+            const sellerProfileLink = document.getElementById("sellerProfileLink");
+
+            sellerNameElement.textContent = sellerData.name || `@${sellerId}`; // Set seller name
+            sellerProfileLink.href = `sellerprofile.html?ownerId=${sellerId}`; // Set profile link
+            document.getElementById("sellerRating").textContent = sellerData.rating || "N/A";
+            document.getElementById("sellerReviews").textContent = sellerData.reviews || 0;
+        } else {
+            console.error("Seller profile not found.");
         }
-
-        // 2. Extract ownerId from the listing
-        const listingData = listingDocSnap.data();
-        const ownerId = listingData.ownerId; // Ensure this field name matches your listings collection
-
-        if (!ownerId) {
-            console.error("No ownerId found in listing:", listingId);
-            return null;
-        }
-
-        // 3. Get user details using the ownerId
-        const sellerDocRef = doc(db, "profiles", ownerId);
-        const sellerDocSnap = await getDoc(sellerDocRef);
-
-        if (!sellerDocSnap.exists()) {
-            console.error("Profile not found for ID:", sellerId);
-            return null;
-        }
-
-        return sellerDocSnap.data();
-    } catch (error) {
-        console.error("Error fetching profile:", error);
-        return null;
+    } else {
+        alert("Listing not found.");
+        window.location.href = "index.html";
     }
 }
 
@@ -76,13 +73,17 @@ async function fetchSellerDetails(listingId) {
 function displaySellerProfile(sellerData) {
     const profileUsername = document.getElementById('profileUsername');
     const profileEmail = document.getElementById('profileEmail');
+    const profilePicture = document.getElementById('profilePicture');
+    const sellerRating = document.getElementById('sellerRating');
+    const sellerReviews = document.getElementById('sellerReviews');
 
     if (sellerData) {
-        // Update the seller's name and email
         profileUsername.textContent = sellerData.name || "Seller Name Not Found";
         profileEmail.textContent = sellerData.email || "No email provided";
+        profilePicture.src = sellerData.profilePicture || "default-avatar.jpg";
+        sellerRating.textContent = sellerData.rating || "N/A";
+        sellerReviews.textContent = sellerData.reviews || 0;
     } else {
-        // Handle case where seller data is not found
         profileUsername.textContent = "Seller Not Found";
         profileEmail.textContent = "No email provided";
     }
@@ -90,8 +91,8 @@ function displaySellerProfile(sellerData) {
 
 // Fetch and display seller details when the page loads
 async function loadSellerProfile() {
-    if (sellerId) {
-        const sellerData = await fetchSellerDetails(sellerId); // sellerId is actually a listing ID
+    if (ownerId) {  // Use ownerId directly
+        const sellerData = await fetchSellerDetails(ownerId);
         displaySellerProfile(sellerData);
     }
 }
@@ -107,5 +108,3 @@ onAuthStateChanged(auth, (user) => {
 
 // Load the seller profile when the page loads
 window.onload = loadSellerProfile;
-
-
