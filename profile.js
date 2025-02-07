@@ -8,7 +8,7 @@ import {
     doc, 
     getDoc, 
     setDoc, 
-    updateDoc, // Ensure this is imported
+    updateDoc,
     collection, 
     query, 
     where, 
@@ -115,16 +115,16 @@ async function updateProfileInfo(uid) {
 // Function to fetch user listings from Firestore
 async function fetchUserListings(uid) {
     const listingsRef = collection(db, "listings");
-    const q = query(listingsRef, where("userId", "==", uid));
+    const q = query(listingsRef, where("ownerId", "==", uid)); // Ensure this matches your Firestore structure
     const querySnapshot = await getDocs(q);
-    
+
     console.log('Listings query results:', querySnapshot.docs.map(doc => doc.data()));
-    
+
     return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+        id: doc.id,
+        ...doc.data()
     }));
-  }
+}
 
 // Function to display profile information
 function displayProfile(userData) {
@@ -186,7 +186,7 @@ document.getElementById('saveProfilePictureUrl')?.addEventListener('click', save
 // Function to display user listings
 function displayListings(listings) {
     const container = document.getElementById('userListings');
-    container.innerHTML = '';
+    container.innerHTML = ''; // Clear existing content
 
     if (listings.length === 0) {
         container.innerHTML = '<p>No listings found.</p>';
@@ -200,6 +200,7 @@ function displayListings(listings) {
                 <div class="listing-content">
                     <h3>${listing.title}</h3>
                     <p>${listing.description}</p>
+                    <p>Price: S$${listing.price}</p>
                 </div>
             </div>
         `;
@@ -207,14 +208,14 @@ function displayListings(listings) {
     });
 }
 
+
 // Listen for auth state changes and update the profile dynamically
 onAuthStateChanged(auth, async (user) => {
     const userInfoElement = document.querySelector("#username");
     if (user) {
-        await updateProfileInfo(user.uid); // This now triggers displayProfile()
-        // Fetch and display listings
-        const listings = await fetchUserListings(user.uid);
-        displayListings(listings);
+        await updateProfileInfo(user.uid); // Update profile info
+        const listings = await fetchUserListings(user.uid); // Fetch listings
+        displayListings(listings); // Display listings
     } else {
         userInfoElement.textContent = "Guest";
     }

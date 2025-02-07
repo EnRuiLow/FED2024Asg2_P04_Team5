@@ -13,6 +13,7 @@ import {
     getDocs
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
   authDomain: "p04-team5.firebaseapp.com",
@@ -41,7 +42,32 @@ console.log("Owner ID from URL:", ownerId);
 if (!ownerId) {
     console.error("No ownerId found in URL parameters");
     alert("Seller profile cannot be loaded. Missing owner ID.");
-    window.location.href = "home.html"; // Redirect to home or another page
+    window.location.href = "home.html";
+}
+
+// Function to fetch user name
+async function fetchUserName(uid) {
+    const userDocRef = doc(db, "users", uid);
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+        return userDocSnap.data().name; // Get 'name' field from Firestore
+    } else {
+        console.log("No user document found!");
+        return "Guest"; // Default name if user data isn't found
+    }
+}
+
+// Function to fetch user email
+async function fetchUserEmail(uid) {
+    const userDocRef = doc(db, "users", uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+        return userDocSnap.data().email; // Get 'email' field from Firestore
+    } else {
+        console.log("No user document found!");
+        return "No email found"; // Default email if user data isn't found
+    }
 }
 
 // Fetch seller's profile details from Firestore
@@ -127,13 +153,34 @@ async function loadSellerProfile() {
 }
 
 // Check auth state (optional)
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
+    const usernameButton = document.getElementById('username');
     if (user) {
         console.log("User is logged in:", user.uid);
+        try {
+            // Fetch from 'profile' collection first
+            const profileRef = doc(db, "profile", user.uid);
+            const profileSnap = await getDoc(profileRef);
+            
+            if (profileSnap.exists()) {
+                const profileData = profileSnap.data();
+                usernameButton.textContent = profileData.name || "User";
+            } else {
+                // Fallback to 'users' collection if profile doesn't exist
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+                usernameButton.textContent = userDocSnap.exists() ? userDocSnap.data().name : "User";
+            }
+        } catch (error) {
+            console.error("Error fetching user name:", error);
+            usernameButton.textContent = "User";
+        }
     } else {
         console.log("User is not logged in.");
+        usernameButton.textContent = "Guest"; // Or keep "Loading..." if preferred
     }
 });
+
 
 // Load the seller profile when the page loads
 window.onload = loadSellerProfile;
