@@ -10,6 +10,7 @@ body {
   color: #333;
 }
 
+/* Added styles for header */
 header {
   display: flex;
   justify-content: space-between;
@@ -39,10 +40,6 @@ header {
   align-items: center;
 }
 
-.user-info span {
-  margin-right: 10px;
-}
-
 .user-info button {
   font-size: 1.05rem;
   margin: 0 5px;
@@ -66,6 +63,21 @@ header {
 
 .user-info button:hover {
   background: #ccc;
+}
+
+.user-info .username-button {
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 7px;
+  margin: 0 5px;
+  color: #333;
+}
+
+.user-info .username-button:hover {
+  text-decoration: underline;
+  background: none;
 }
 
 .search-bar {
