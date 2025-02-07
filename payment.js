@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Extract listingId and offerId from URL
     const urlParams = new URLSearchParams(window.location.search);
     const listingId = urlParams.get("id");
-    const offerId = urlParams.get("offerId"); // Ensure offerId is passed when navigating
+    const offerId = urlParams.get("offerId"); 
 
     if (!listingId || !offerId) {
         window.location.href = "home.html";
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let totalAmount = 0;
     let rewardsUsable = 0;
-    let itemName = "Unknown Item"; // Default item name
+    let itemName = "Unknown Item"; 
 
     try {
         // Fetch offer details from Firestore (offers -> offerId)
@@ -28,14 +28,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const offerData = offerSnap.data();
-        totalAmount = offerData.offerAmount || 0; // Offered amount
+        totalAmount = offerData.offerAmount || 0; 
 
         // Fetch listing details to get the item name
         const listingRef = db.collection("listings").doc(listingId);
         const listingSnap = await listingRef.get();
         if (listingSnap.exists) {
             const listingData = listingSnap.data();
-            itemName = listingData.title || "Unknown Item"; // Get item name
+            itemName = listingData.title || "Unknown Item"; 
         }
 
         // Fixed platform tax
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const userSnap = await userRef.get();
             if (userSnap.exists) {
                 const userName = userSnap.data().name || "Guest";
-                document.getElementById("username").textContent = userName; // Update username in header
+                document.getElementById("username").textContent = userName; 
             }
 
             // Fetch buyer's total rewards
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const rewardsSnap = await rewardsRef.get();
             if (rewardsSnap.exists) {
                 const totalRewards = rewardsSnap.data().totalRewards || 0;
-                rewardsUsable = Math.min(totalRewards, totalAmount - 2); // Buyer must pay at least $2
+                rewardsUsable = Math.min(totalRewards, totalAmount - 2); 
             }
 
             // Calculate final amount due
@@ -96,13 +96,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             const listingRef = db.collection("listings").doc(listingId);
             const listingSnap = await listingRef.get();
             if (listingSnap.exists) {
-                const sellerId = listingSnap.data().sellerId;
-                await db.collection("notifications").add({
-                    listingId: listingId,
-                    message: "Buyer has paid for the listing",
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    sellerId: sellerId
-                });
+                const ownerId = listingSnap.data().ownerId;
+
+                if (ownerId !== undefined) {
+                    // Delete accepted offer notification
+                    const notificationRef = db.collection("notifications");
+                    const querySnapshot = await notificationRef.where("listingId", "==", listingId).where("sellerId", "==", ownerId).get();
+                    querySnapshot.forEach((doc) => {
+                        notificationRef.doc(doc.id).delete();
+                    });
+
+                    // Create new notification
+                    await db.collection("notifications").add({
+                        listingId: listingId,
+                        message: "Buyer has paid for the listing",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        sellerId: ownerId
+                    });
+                } else {
+                    console.error("Seller ID is undefined");
+                }
             }
 
         }, 2000);

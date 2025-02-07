@@ -1,6 +1,8 @@
 // Import necessary Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, getDocs, onSnapshot, updateDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { 
+    getFirestore, collection, getDocs, onSnapshot, updateDoc, doc, getDoc, setDoc, deleteDoc 
+} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 // Firebase configuration and initialization
@@ -45,21 +47,26 @@ onAuthStateChanged(auth, async (user) => {
             notificationContainer.innerHTML = "";
             querySnapshot.forEach((doc) => {
                 const notification = doc.data();
+                const paymentStatus = notification.status === "paid" ? "Paid" : "Unpaid"; // Determine payment status
+
                 if (notification.sellerId === currentUserId) {
-                    // Seller's notification
+                    // Seller's notification (includes payment status)
                     const notificationHTML = `
                         <div class="notification" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">
-                            <div class="message">New offer of S$${notification.offerAmount} for listing ${notification.listingId}</div>
+                            <div class="message">New offer of S$${notification.offerAmount} for listing ${notification.listingId}.</div>
+                            <div class="payment-status"><strong>Payment Status:</strong> ${paymentStatus}</div>
                             <div class="timestamp">${notification.createdAt.toDate().toLocaleString()}</div>
+                            ${paymentStatus === "Unpaid" ? `
                             <div class="actions">
                                 <button class="accept-button" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">Accept</button>
                                 <button class="decline-button" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">Decline</button>
                             </div>
+                            ` : ""}
                         </div>
                     `;
                     notificationContainer.insertAdjacentHTML("beforeend", notificationHTML);
                 } else if (notification.buyerId === currentUserId) {
-                    // Buyer's notification
+                    // Buyer's notification (allows confirming delivery after payment)
                     const notificationHTML = `
                         <div class="notification" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">
                             <div class="message">Your offer of S$${notification.offerAmount} for listing ${notification.listingId} is ${notification.status}</div>
@@ -67,6 +74,11 @@ onAuthStateChanged(auth, async (user) => {
                             ${notification.status === "accepted" ? `
                                 <div class="actions">
                                     <button class="pay-now-button" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">Pay</button>
+                                </div>
+                            ` : ""}
+                            ${notification.status === "paid" ? `
+                                <div class="actions">
+                                    <button class="confirm-delivery-button" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">Confirm Delivery</button>
                                 </div>
                             ` : ""}
                         </div>
@@ -90,16 +102,14 @@ onAuthStateChanged(auth, async (user) => {
                     } else if (event.target.classList.contains("pay-now-button")) {
                         const notificationId = event.target.getAttribute("data-notification-id");
                         const listingId = event.target.getAttribute("data-listing-id");
-                        window.location.href = `payment.html?id=${listingId}&offerId=${notificationId}`;
+                        markAsPaid(notificationId, listingId);
+                    } else if (event.target.classList.contains("confirm-delivery-button")) {
+                        const notificationId = event.target.getAttribute("data-notification-id");
+                        const listingId = event.target.getAttribute("data-listing-id");
+                        confirmDelivery(notificationId, listingId);
                     } else {
                         const listingId = notification.getAttribute("data-listing-id");
-                        const message = notification.querySelector(".message").textContent;
-                        if (message.includes("accepted") && message.includes("Your offer")) {
-                            const notificationId = notification.getAttribute("data-notification-id");
-                            window.location.href = `payment.html?id=${listingId}&offerId=${notificationId}`;
-                        } else {
-                            window.location.href = `sellpage.html?id=${listingId}`;
-                        }
+                        window.location.href = `sellpage.html?id=${listingId}`;
                     }
                 });
             });
@@ -107,6 +117,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// Accept offer
 async function acceptOffer(notificationId, listingId) {
     const offerRef = doc(db, "offers", notificationId);
     await updateDoc(offerRef, {
@@ -115,6 +126,7 @@ async function acceptOffer(notificationId, listingId) {
     sendNotification(listingId, "Offer accepted!");
 }
 
+// Decline offer
 async function declineOffer(notificationId, listingId) {
     const offerRef = doc(db, "offers", notificationId);
     await updateDoc(offerRef, {
@@ -123,8 +135,24 @@ async function declineOffer(notificationId, listingId) {
     sendNotification(listingId, "Offer declined!");
 }
 
+// Mark offer as paid
+async function markAsPaid(notificationId, listingId) {
+    const offerRef = doc(db, "offers", notificationId);
+    await updateDoc(offerRef, {
+        status: "paid"
+    });
+    sendNotification(listingId, "Payment received!");
+}
+
+// Confirm delivery & delete offer document
+async function confirmDelivery(notificationId, listingId) {
+    const offerRef = doc(db, "offers", notificationId);
+    await deleteDoc(offerRef);
+    sendNotification(listingId, "Delivery confirmed!");
+}
+
+// Send notification
 async function sendNotification(listingId, message) {
-    // Send notification to buyer
     const notificationRef = collection(db, "notifications");
     const newNotificationRef = doc(notificationRef);
     await setDoc(newNotificationRef, {
