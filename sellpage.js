@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, collection } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
@@ -51,7 +52,6 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-
 // Fetch listing details and seller info
 async function fetchListingDetails() {
     const docRef = doc(db, "listings", listingId);
@@ -69,7 +69,6 @@ async function fetchListingDetails() {
         const sellerRef = doc(db, "users", sellerId);
         const sellerSnap = await getDoc(sellerRef);
 
-       
         if (sellerSnap.exists()) {
             const sellerData = sellerSnap.data();
             const sellerLink = document.getElementById("sellerProfileLink");
@@ -121,8 +120,48 @@ async function createChatRoom() {
     }
 }
 
+// Function to submit an offer to the seller
+async function submitOffer() {
+    if (!currentUserId || !sellerId) {
+        alert("Error: User or seller information is missing.");
+        return;
+    }
+
+    if (currentUserId === sellerId) {
+        alert("You cannot make an offer to yourself.");
+        return;
+    }
+
+    const offerAmount = parseFloat(prompt("Enter your offer amount:"));
+    if (isNaN(offerAmount) || offerAmount <= 0) {
+        alert("Please enter a valid offer amount.");
+        return;
+    }
+
+    try {
+        // Create a new offer document in Firestore
+        const offerRef = collection(db, "offers");
+        await addDoc(offerRef, {
+            listingId: listingId,
+            buyerId: currentUserId,
+            sellerId: sellerId,
+            offerAmount: offerAmount,
+            status: "pending", // Offer status: pending, accepted, declined
+            createdAt: new Date(),
+        });
+
+        alert("Your offer has been submitted successfully!");
+    } catch (error) {
+        console.error("Error submitting offer:", error);
+        alert("An error occurred while submitting your offer.");
+    }
+}
+
 // Attach event listener to the "Chat with Seller" button
 document.getElementById("chatButton").addEventListener("click", createChatRoom);
+
+// Attach event listener to the "Offer Price" button
+document.getElementById("offerButton").addEventListener("click", submitOffer);
 
 // Wait for user authentication
 onAuthStateChanged(auth, (user) => {
@@ -130,7 +169,7 @@ onAuthStateChanged(auth, (user) => {
         currentUserId = user.uid; // Store current user ID
         fetchListingDetails();
     } else {
-        alert("Please log in to chat with the seller.");
+        alert("Please log in to make an offer or chat with the seller.");
         window.location.href = "index.html"; // Redirect to login page
     }
 });

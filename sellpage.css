@@ -137,6 +137,22 @@ header {
     background-color: #ff6b81;
 }
 
+#offerButton {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 1.5rem;
+}
+
+#offerButton:hover {
+    background-color: #ff6b81;
+}
+
 .user-info .username-button {
     font-weight: bold;
     background: none;
@@ -145,15 +161,13 @@ header {
     padding: 7px;
     margin: 0 5px;
     color: #333;
-  }
-  
-  .user-info .username-button:hover {
+}
+
+.user-info .username-button:hover {
     text-decoration: underline;
     background: none;
-  }
-  
+}
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -173,7 +187,7 @@ header {
         margin: 0 2px;
         padding: 5px;
         font-size: 0.9rem;
-      }
+    }
 
     .container {
         padding: 10px;
@@ -192,6 +206,10 @@ header {
     }
 
     #chatButton {
+        font-size: 1.2rem;
+    }
+
+    .offer-button {
         font-size: 1.2rem;
     }
 }

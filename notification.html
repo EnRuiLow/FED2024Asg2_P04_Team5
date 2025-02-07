@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notification Page</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Page</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="notification.css">
+</head>
+<body>
+    <header>
+        <div class="nav-buttons">
+            <button>MokeSell</button>
+            <button>Fashion</button>
+            <button>Electronics</button>
+            <button>Luxury</button>
+        </div>
+        <div class="user-info">
+            <button class="username-button" id="username" onclick="window.location.href='profile.html'">Loading...</button>
+            <button onclick="window.location.href='follow.html'">❤️</button>
+            <button class="notification-button" onclick="window.location.href='notification.html'">🔔</button>
+            <button>🛒</button>
+            <button onclick="window.location.href='chat.html'">💬</button>
+            <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button>
+        </div>
+    </header>
+    
+    <main>
+        <h1>Notifications</h1>
+        <div id="notification-container"></div>
+    </main>
+
+    <script type="module" src="notification.js"></script>
+</body>
+</html>
