@@ -1,4 +1,3 @@
-
 body {
     font-family: Arial, sans-serif;
 }
@@ -146,4 +145,23 @@ main {
 
 .decline-button:hover {
     background-color: #e91e63;
+}
+
+/* Make notifications more compact on mobile devices */
+@media only screen and (max-width: 768px) {
+    .notification {
+        padding: 12px;
+    }
+    
+    .notification .message {
+        font-size: 14px;
+    }
+    
+    .notification .timestamp {
+        font-size: 12px;
+    }
+    
+    .notification .actions button {
+        padding: 6px;
+    }
 }
