@@ -1,6 +1,8 @@
+
 body {
     font-family: Arial, sans-serif;
 }
+
 /* Existing styles */
 
 /* Added styles for header */
@@ -90,6 +92,8 @@ main {
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     padding: 20px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .notification:last-child {
@@ -103,4 +107,43 @@ main {
 .notification .timestamp {
     color: #666;
     font-size: 14px;
+}
+
+.notification .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 20px;
+}
+
+.notification .actions button {
+    margin: 0 5px;
+    padding: 7px;
+    border: none;
+    background-color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.notification .actions button:hover {
+    background-color: #dddddd;
+}
+
+.accept-button {
+    background-color: #4CAF50;
+    color: black;
+}
+
+.decline-button {
+    background-color: #f44336;
+    color: black;
+}
+
+.accept-button:hover {
+    background-color: #3e8e41;
+}
+
+.decline-button:hover {
+    background-color: #e91e63;
 }
