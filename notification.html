@@ -6,6 +6,22 @@
     <title>Notification Page</title>
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="notification.css">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <style>
+
+
+        @media (max-width: 768px) {
+            .notification-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .notification-header dotlottie-player {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -26,7 +42,12 @@
     </header>
     
     <main>
-        <h1>Notifications</h1>
+        <div class="notification-header">
+            <h1>Notifications</h1>
+            <dotlottie-player src="https://lottie.host/ddf4bc8e-b3cd-4b19-b640-1c7eb933c96a/UGgQWCngmW.lottie" 
+                background="transparent" speed="1" loop autoplay>
+            </dotlottie-player>
+        </div>
         <div id="notification-container"></div>
     </main>
 

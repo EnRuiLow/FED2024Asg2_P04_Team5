@@ -5,6 +5,18 @@
   font-family: Arial, sans-serif;
 }
 
+.filter-header {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+.filter-header dotlottie-player {
+  width: 80px;
+  height: 80px;
+}
+
+
 body {
   background-color: #f9f9f9;
   color: #333;

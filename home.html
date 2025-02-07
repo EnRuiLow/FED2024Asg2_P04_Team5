@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explore Page</title>
     <link rel="stylesheet" href="home.css">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
   </head>
 <body>  
 
@@ -35,7 +36,12 @@
   <main>
     <div class="section">
       <div class="filter-section">
-        <h2>Popular choices</h2>
+        <div class="filter-header">
+          <h2>Popular choices</h2>
+          <dotlottie-player src="https://lottie.host/f065b252-4fee-4d7e-b169-88d5b64fd268/3XYiXrAnqh.lottie" 
+            background="transparent" speed="1" loop autoplay>
+          </dotlottie-player>
+        </div>
         <select id="filter" onchange="filterProducts()">
           <option value="recent">Recently Listed</option>
           <option value="lowToHigh">Price: Low to High</option>
@@ -43,22 +49,20 @@
           <option value="popular">Most Popular</option>
         </select>
       </div>
-      <div class="product-grid" id="popular-grid"></div> <!-- Added ID -->
+      <div class="product-grid" id="popular-grid"></div>
     </div>
     
     <div class="section">
       <h2>Recently listed</h2>
-      <div class="product-grid" id="recent-grid"></div> <!-- Added ID -->
+      <div class="product-grid" id="recent-grid"></div>
     </div>
     
     <div class="section">
       <h2>Recommended for you</h2>
-      <div class="product-grid" id="recommended-grid"></div> <!-- Added ID -->
+      <div class="product-grid" id="recommended-grid"></div>
     </div>
   </main>
 
   <script type="module" src="home.js"></script>
 </body>
 </html>
-
-

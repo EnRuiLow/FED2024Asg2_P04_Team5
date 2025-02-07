@@ -12,6 +12,17 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.notification-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-header dotlottie-player {
+    width: 80px;
+    height: 80px;
+}
+
 .nav-buttons button {
     margin: 0 5px;
     padding: 7px;
@@ -85,35 +96,33 @@ main {
     margin-top: 20px;
 }
 
-/* Existing styles */
 
-/* Added styles for notification layout */
 .notification {
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
+    flex-direction: column;
     padding: 20px;
-    overflow: auto; /* Ensure container expands to fit content */
+    overflow: auto; 
 }
 
 .notification .message {
-    margin-bottom: 10px; /* Add space between message and buttons */
+    margin-bottom: 10px; 
     font-weight: bold;
 }
 
 .notification .timestamp {
     color: #666;
     font-size: 14px;
-    margin-bottom: 10px; /* Add space between timestamp and buttons */
+    margin-bottom: 10px; 
 }
 
 .notification .actions {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px; /* Add space between buttons and message */
+    margin-top: 10px; 
 }
 
 .notification .actions button {
-    width: 45%; /* Set button width to fit within the container */
+    width: 45%;
     margin: 0 5px;
     padding: 7px;
     border: none;
