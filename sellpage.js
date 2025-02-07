@@ -73,7 +73,6 @@ async function fetchListingDetails() {
         if (sellerSnap.exists()) {
             const sellerData = sellerSnap.data();
             const sellerLink = document.getElementById("sellerProfileLink");
-            document.getElementById("sellerName").innerText = sellerData.name || `@${sellerId}`;
             sellerLink.textContent = sellerData.name || `@${sellerId}`;
             sellerLink.href = `sellerprofile.html?ownerId=${sellerId}`;  // Ensure this line is correct
             document.getElementById("sellerRating").textContent = sellerData.rating || "N/A";
