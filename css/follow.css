@@ -98,7 +98,6 @@ header {
   background: none;
 }
 
-/* Add existing styles from sellerprofile.css */
 .listings-container {
   display: grid;
   gap: 1rem;
@@ -134,7 +133,6 @@ header {
   color: #666;
 }
 
-/* Add new styles for the follow page */
 .profile-container {
   padding: 2rem;
   max-width: 1200px;

@@ -6,8 +6,8 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="stylesheet" href="profile.css">
+    <title>Seller Profile</title>
+    <link rel="stylesheet" href="/css/sellerprofile.css">
   </head>
 <body>
 
@@ -17,7 +17,8 @@
       <button>Fashion</button>
       <button>Electronics</button>
       <button>Luxury</button>
-    </div>
+  </div>
+  
     <div class="user-info">
       <button class="username-button" id="username" onclick="window.location.href='profile.html'">Loading...</button>
       <button onclick="window.location.href='follow.html'">👥</button>
@@ -32,33 +33,36 @@
     <!-- Left Column (Profile Card) -->
     <div class="profile-column">
         <div class="profile-card">
-            <div class="profile-picture-container">
-              <div class="profile-picture" id="profilePicture">
-                <div class="default-avatar"></div>
-              </div>
-                <div class="profile-info">
-                  <h1 id="profileUsername">Loading...</h1>  <!-- Changed ID -->
-                  <p id="profileEmail" class="profile-email">Loading...</p>
-              </div>
-            </div>
-            <div class="upload-section">
-              <button id="toggleInputBtn">Edit Profile Picture</button>
-              <input type="text" id="profilePictureUrl" placeholder="Enter image URL" style="display: none;">
-              <button id="saveProfilePictureUrl" style="display: none;">Save</button>
+          <div class="profile-picture-container">
+            <img id="sellerProfilePicture" src="" class="profile-picture">
           </div>
+          <div class="profile-info">
+            <h1 id="profileUsername"></h1>
+            <p id="profileEmail" class="profile-email"></p>
+        </div>
+        </div>
+          <div class="seller-info">
+            <p>Seller: 
+                <a id="sellerProfileLink" href="#">Loading...</a>
+            </p>
+            <p>Rating: <span id="sellerRating"></span> (<span id="sellerReviews"></span> reviews)</p>
+            <button id="followButton">Follow</button>
         </div>
     </div>
 
     <!-- Right Column (Listings) -->
     <div class="listings-column">
-      <h2>Your Listings</h2>
-      <div class="listings-container" id="userListings">
-      </div>
+        <h2>Their Listings</h2>
+        <div class="listings-container" id="userListings">
+            <!-- Listings will be dynamically inserted here -->
+        </div>
     </div>
   </main>
 
 
-  <script type="module" src="profile.js"></script>
+<script type="module" src="/js/sellerprofile.js"></script>
 
+  
 </body>
 </html>
+

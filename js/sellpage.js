@@ -22,7 +22,7 @@ const listingId = urlParams.get("id");
 
 if (!listingId) {
     alert("Invalid listing ID.");
-    window.location.href = "index.html";
+    window.location.href = "/index.html";
 }
 
 let currentUserId = null;
@@ -170,6 +170,6 @@ onAuthStateChanged(auth, (user) => {
         fetchListingDetails();
     } else {
         alert("Please log in to make an offer or chat with the seller.");
-        window.location.href = "index.html"; // Redirect to login page
+        window.location.href = "/index.html"; // Redirect to login page
     }
 });

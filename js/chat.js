@@ -209,6 +209,6 @@ onAuthStateChanged(auth, (user) => {
     });
   } else {
     alert("Please log in to use the chat.");
-    window.location.href = "index.html"; // Redirect if not logged in
+    window.location.href = "/index.html"; // Redirect if not logged in
   }
 });

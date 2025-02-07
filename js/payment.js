@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // Redirect to home.html after successful payment
-            window.location.href = "home.html"; // <-- Add this line
+            window.location.href = "home.html";
         }, 2000);
     });
 });
