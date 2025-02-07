@@ -130,7 +130,7 @@ async function handleClaim() {
 
 // Redirect user to home.html
 function redirectToHome() {
-  window.location.href = "home.html";
+  window.location.href = "html/home.html";
 }
 
 // Event listeners
