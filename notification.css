@@ -87,34 +87,35 @@ main {
     margin-top: 20px;
 }
 
-.notification {
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-}
+/* Existing styles */
 
-.notification:last-child {
-    border-bottom: none;
+/* Added styles for notification layout */
+.notification {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    padding: 20px;
+    overflow: auto; /* Ensure container expands to fit content */
 }
 
 .notification .message {
+    margin-bottom: 10px; /* Add space between message and buttons */
     font-weight: bold;
 }
 
 .notification .timestamp {
     color: #666;
     font-size: 14px;
+    margin-bottom: 10px; /* Add space between timestamp and buttons */
 }
 
 .notification .actions {
     display: flex;
     justify-content: space-between;
-    margin-left: 20px;
+    margin-top: 10px; /* Add space between buttons and message */
 }
 
 .notification .actions button {
+    width: 45%; /* Set button width to fit within the container */
     margin: 0 5px;
     padding: 7px;
     border: none;
