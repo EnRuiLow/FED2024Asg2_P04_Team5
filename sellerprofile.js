@@ -7,6 +7,7 @@ import {
     getFirestore, 
     doc, 
     getDoc,
+    setDoc,
     collection,
     query,
     where,
@@ -182,5 +183,52 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 
+async function handleFollowButtonClick() {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("You must be logged in to follow a seller.");
+            return;
+        }
+
+        // Prevent users from following themselves
+        if (user.uid === ownerId) {
+            alert("You cannot follow yourself.");
+            return;
+        }
+
+        // Get references to both profiles
+        const [userProfile, sellerProfile] = await Promise.all([
+            getDoc(doc(db, "profile", user.uid)),
+            getDoc(doc(db, "profile", ownerId))
+        ]);
+
+        if (!userProfile.exists() || !sellerProfile.exists()) {
+            alert("Profile information is missing.");
+            return;
+        }
+
+        // Prepare follow data
+        const followData = {
+            userEmail: userProfile.data().email,
+            userName: userProfile.data().name,
+            ownerId: ownerId,
+            ownerName: sellerProfile.data().name,
+            ownerEmail: sellerProfile.data().email,
+            timestamp: new Date()
+        };
+
+        // Create/update the follow document
+        await setDoc(doc(db, "user_following", user.uid), followData, { merge: true });
+        
+        alert(`You are now following ${sellerProfile.data().name}!`);
+    } catch (error) {
+        console.error("Error following seller:", error);
+        alert("Failed to follow seller. Please try again.");
+    }
+}
+
+// Add event listener to follow button
+document.getElementById('followButton')?.addEventListener('click', handleFollowButtonClick);
 // Load the seller profile when the page loads
 window.onload = loadSellerProfile;
