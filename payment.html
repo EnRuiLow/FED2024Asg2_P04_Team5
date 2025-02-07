@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="payment.css">
+</head>
+<body>
+    <header>
+        <div class="nav-buttons">
+            <button onclick="window.location.href='index.html'">MokeSell</button>
+            <button onclick="window.location.href='home.html'">Home</button>
+            <button onclick="window.location.href='listings.html'">Listings</button>
+            <button onclick="window.location.href='profile.html'">Profile</button>
+        </div>
+        <div class="user-info">
+            <button class="username-button" id="username">Loading...</button>
+            <button onclick="window.location.href='follow.html'">❤️</button>
+            <button onclick="window.location.href='notification.html'">🔔</button>
+            <button onclick="window.location.href='cart.html'">🛒</button>
+            <button onclick="window.location.href='chat.html'">💬</button>
+            <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button>
+        </div>
+    </header>
+    <main>
+        <h1>Payment</h1>
+        <div id="payment-container">
+            <p id="listing-name"></p>
+            <p id="total-amount"></p>
+            <p id="platform-tax"></p>
+            <p id="total-rewards"></p>
+            <p id="rewards-usable"></p>
+            <p id="amount-due"></p>
+            <form id="payment-form">
+                <label for="credit-card-number">Credit Card Number:</label>
+                <input type="text" id="credit-card-number" name="credit-card-number" required><br><br>
+                
+                <label for="expiration-date">Expiration Date:</label>
+                <input type="text" id="expiration-date" name="expiration-date" required><br><br>
+                
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv" required><br><br>
+                <label for="save-credit-card">Save credit card for future purchases</label><br><br>
+                <input type="checkbox" id="save-credit-card" name="save-credit-card">
+
+                <button type="submit" class="pay-button">Pay Now</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Firebase Scripts (Version 8 for simplicity) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <!-- Firebase Initialization -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
+            authDomain: "p04-team5.firebaseapp.com",
+            projectId: "p04-team5",
+            storageBucket: "p04-team5.appspot.com",
+            messagingSenderId: "88767932375",
+            appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
+            measurementId: "G-BKQ9JDGZ9G"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script src="payment.js"></script>
+</body>
+</html>

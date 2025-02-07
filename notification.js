@@ -64,6 +64,11 @@ onAuthStateChanged(auth, async (user) => {
                         <div class="notification" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">
                             <div class="message">Your offer of S$${notification.offerAmount} for listing ${notification.listingId} is ${notification.status}</div>
                             <div class="timestamp">${notification.createdAt.toDate().toLocaleString()}</div>
+                            ${notification.status === "accepted" ? `
+                                <div class="actions">
+                                    <button class="pay-now-button" data-notification-id="${doc.id}" data-listing-id="${notification.listingId}">Pay</button>
+                                </div>
+                            ` : ""}
                         </div>
                     `;
                     notificationContainer.insertAdjacentHTML("beforeend", notificationHTML);
@@ -82,11 +87,16 @@ onAuthStateChanged(auth, async (user) => {
                         const notificationId = event.target.getAttribute("data-notification-id");
                         const listingId = event.target.getAttribute("data-listing-id");
                         declineOffer(notificationId, listingId);
+                    } else if (event.target.classList.contains("pay-now-button")) {
+                        const notificationId = event.target.getAttribute("data-notification-id");
+                        const listingId = event.target.getAttribute("data-listing-id");
+                        window.location.href = `payment.html?id=${listingId}&offerId=${notificationId}`;
                     } else {
                         const listingId = notification.getAttribute("data-listing-id");
                         const message = notification.querySelector(".message").textContent;
                         if (message.includes("accepted") && message.includes("Your offer")) {
-                            window.location.href = `payment.html?id=${listingId}`;
+                            const notificationId = notification.getAttribute("data-notification-id");
+                            window.location.href = `payment.html?id=${listingId}&offerId=${notificationId}`;
                         } else {
                             window.location.href = `sellpage.html?id=${listingId}`;
                         }

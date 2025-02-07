@@ -1,0 +1,196 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.nav-buttons button {
+    margin: 0 5px;
+    padding: 7px;
+    border: none;
+    background-color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.nav-buttons button:hover {
+    background-color: #dddddd;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info button {
+    font-size: 1.05rem;
+    margin: 0 5px;
+    border: none;
+    background: #ddd;
+    border-radius: 50%;
+    padding: 7px;
+    cursor: pointer;
+}
+
+.user-info .username-button {
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 7px;
+    margin: 0 5px;
+    color: #333;
+}
+
+.user-info .username-button:hover {
+    text-decoration: underline;
+    background: none;
+}
+
+.user-info button.sell-button {
+    font-size: 1.05rem;
+    margin: 0 5px;
+    border: none;
+    background: #ddd;
+    border-radius: 5px;
+    padding: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.user-info button:hover {
+    background: #ccc;
+}
+
+main {
+    padding: 20px;
+}
+
+#payment-container {
+    width: 500px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#payment-container p {
+    margin-bottom: 10px;
+}
+
+#payment-container label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#payment-container input[type="text"], #payment-container input[type="checkbox"] {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#payment-container button[type="button"] {
+    width: 100%;
+    height: 40px;
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#payment-container button[type="button"]:hover {
+    background-color: #3e8e41;
+}
+
+.pay-button {
+    background-color: #d32f2f;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pay-button:hover {
+    background-color: #c62828;
+    transform: scale(1.05);
+}
+
+.pay-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+
+
+@media only screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .nav-buttons button {
+        flex: 1;
+        margin: 0 2px;
+        font-size: 0.9rem;
+        padding: 5px;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .user-info button {
+        margin: 0 2px;
+        padding: 5px;
+        font-size: 0.9rem;
+    }
+
+    .user-info .username-button {
+        margin: 0 2px;
+        padding: 5px;
+        font-size: 0.9rem;
+    }
+}
