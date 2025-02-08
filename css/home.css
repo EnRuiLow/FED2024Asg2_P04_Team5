@@ -360,27 +360,30 @@ main {
       margin-top: 10px;
   }
 }
+/* Ensure all product grids display one product per row on mobile */
+@media only screen and (max-width: 768px) {
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* One product per row */
+    gap: 15px;
+}
 
-@media only screen and (max-width: 480px) {
-  .nav-buttons button {
-      flex: 1 1 100%; /* One button per row */
+  .product-card {
+      width: 100%;
   }
+}
 
-  .user-info button {
-      font-size: 0.8rem;
-      padding: 4px;
-  }
-
-  .user-info .username-button {
-      font-size: 0.8rem;
-      padding: 4px;
+/* Ensure all product grids display one product per row on mobile */
+@media only screen and (max-width: 768px) {
+  .product-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important; /* One product per row */
+    gap: 15px !important;
   }
 
   .product-card {
-      padding: 10px;
-  }
-
-  .product-card .description {
-      font-size: 0.8rem;
+    width: 100% !important;
   }
 }
+
+

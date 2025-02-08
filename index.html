@@ -40,17 +40,34 @@
     </div>
   </main>
   <!-- Coupon Popup -->
-  <div id="couponPopup" class="coupon-popup-overlay">
-    <div class="coupon-tracker">
-      <span class="close-btn" onclick="closeCouponPopup()">&times;</span>
-      <h1>Daily Login Reward</h1>
-      <div class="progress-bar">
-        <div class="progress" id="progress"></div>
-      </div>
-      <p class="coupon" id="coupon">Today's Coupon: $0</p>
-      <button id="claimButton">Claim Reward</button>
-    </div>
+  <div id="tokenPopup" class="popup-overlay">
+  <div class="popup-content">
+    <h2>Welcome back! 🎉</h2>
+    <p>Claim your daily token now!</p>
+    <button id="claimTokenBtn" class="btn">Claim Your Token</button>
   </div>
+</div>
+
+<!-- Wheel Spin Popup -->
+<div id="wheelPopup" class="popup-overlay">
+  <div class="popup-content">
+    <h2>Spin the Wheel! 🎡</h2>
+    <div class="wheel-container">
+      <div class="wheel">
+        <div class="wheel-inner">
+          <div class="wheel-segment" style="--i:1; --clr:#ffcc00;"></div>
+          <div class="wheel-segment" style="--i:2; --clr:#ff6666;"></div>
+          <div class="wheel-segment" style="--i:3; --clr:#66cc66;"></div>
+          <div class="wheel-segment" style="--i:4; --clr:#6699cc;"></div>
+          <div class="wheel-segment" style="--i:5; --clr:#cc99cc;"></div>
+        </div>
+        <div class="wheel-pointer"></div>
+      </div>
+    </div>
+    <button id="spinWheelBtn" class="btn">Spin the Wheel</button>
+    <p id="spinResult"></p>
+  </div>
+</div>
 
 
   <script type="module" src="js/index.js"></script>

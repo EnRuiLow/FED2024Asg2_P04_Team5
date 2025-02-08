@@ -17,7 +17,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
   authDomain: "p04-team5.firebaseapp.com",
   projectId: "p04-team5",
-  storageBucket: "p04-team5.firebasestorage.app",
+  storageBucket: "p04-team5.appspot.com",
   messagingSenderId: "88767932375",
   appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
   measurementId: "G-BKQ9JDGZ9G"
@@ -28,11 +28,27 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Coupon values
-const couponValues = [1, 2, 3, 4, 5, 5, 5];
+// Wheel probabilities
+const wheelProbabilities = [
+  { value: 0, chance: 20 },
+  { value: 1, chance: 45 },
+  { value: 2, chance: 28 },
+  { value: 4, chance: 5 },
+  { value: 8, chance: 2 }
+];
 
 let currentUser = null;
 let userRewards = null;
+
+// Track authentication state
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    await initializeUserRewards();
+  } else {
+    currentUser = null;
+  }
+});
 
 // Login form submission
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,18 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
       currentUser = userCredential.user;
-      await initializeUserRewards(); // Fetch or create reward tracking data
+      await initializeUserRewards();
 
-      // Check if the user has already claimed today
       const today = new Date().toDateString();
       const lastClaimedDate = new Date(userRewards.lastClaimed).toDateString();
 
       if (lastClaimedDate !== today) {
-        showCouponPopup(); // Show coupon pop-up
+        showTokenPopup();
       } else {
-        redirectToHome(); // If already claimed, proceed to home.html
+        redirectToHome();
       }
       
     } catch (error) {
@@ -65,81 +79,125 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Track authentication state
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUser = user;
-    await initializeUserRewards();
-  }
-});
-
 // Initialize or fetch user rewards in Firestore
 async function initializeUserRewards() {
-  if (!currentUser) return;
+  if (!currentUser) {
+    console.error("No user is currently logged in.");
+    return;
+  }
 
   const userRef = doc(db, "user_rewards", currentUser.uid);
   const docSnap = await getDoc(userRef);
 
   if (!docSnap.exists()) {
-    // New user reward initialization
     await setDoc(userRef, {
       email: currentUser.email,
-      currentDay: 0,
-      lastClaimed: "2000-01-01", // Default old date
-      totalRewards: 0
+      lastClaimed: "2000-01-01",
+      totalEarnings: 0
     });
   }
 
   userRewards = (await getDoc(userRef)).data();
 }
 
-// Show coupon pop-up if the reward hasn't been claimed today
-function showCouponPopup() {
-  document.getElementById('couponPopup').style.display = 'flex';
-  updateTrackerUI();
+// Token Popup Functions
+function showTokenPopup() {
+  document.getElementById('tokenPopup').style.display = 'flex';
 }
 
-// Update the UI with the current progress and coupon value
-function updateTrackerUI() {
-  const progress = (userRewards.currentDay + 1) / couponValues.length * 100;
-  document.getElementById('progress').style.width = `${progress}%`;
-  document.getElementById('coupon').textContent = 
-    `Today's Coupon: $${couponValues[userRewards.currentDay]}`;
+function closeTokenPopup() {
+  document.getElementById('tokenPopup').style.display = 'none';
 }
 
-// Handle reward claim
-async function handleClaim() {
-  const today = new Date();
+// Wheel Popup Functions
+function showWheelPopup() {
+  document.getElementById('wheelPopup').style.display = 'flex';
+}
+
+function closeWheelPopup() {
+  document.getElementById('wheelPopup').style.display = 'none';
+}
+
+// Event Listeners
+document.getElementById('claimTokenBtn').addEventListener('click', async () => {
+  closeTokenPopup();
+  showWheelPopup();
+});
+
+document.getElementById('spinWheelBtn').addEventListener('click', async () => {
+  if (!currentUser) {
+    console.error("No user is currently logged in.");
+    return;
+  }
+
+  const reward = calculateReward();
   const userRef = doc(db, "user_rewards", currentUser.uid);
-
-  // Update user rewards
-  const newDay = (userRewards.currentDay + 1) % couponValues.length;
-  const newTotal = userRewards.totalRewards + couponValues[userRewards.currentDay];
-
+  
+  // Update total earnings
+  const newTotal = userRewards.totalEarnings + reward;
   await setDoc(userRef, {
-    email: currentUser.email,
-    currentDay: newDay,
-    lastClaimed: today.toISOString(),
-    totalRewards: newTotal
+    totalEarnings: newTotal,
+    lastClaimed: new Date().toISOString()
   }, { merge: true });
 
-  alert(`Claimed $${couponValues[userRewards.currentDay]}! Total: $${newTotal}`);
-  closeCouponPopup();
-  redirectToHome(); // Redirect after claiming
+  // Show result and redirect
+  const spinResult = document.getElementById('spinResult');
+  spinResult.textContent = `Congratulations, you earned $${reward}! Happy spending!`;
+  
+  setTimeout(() => {
+    closeWheelPopup();
+    redirectToHome();
+  }, 3000);
+});
+
+// Reward calculation function
+function calculateReward() {
+  const random = Math.random() * 100;
+  let cumulative = 0;
+  
+  for (const { value, chance } of wheelProbabilities) {
+    cumulative += chance;
+    if (random <= cumulative) return value;
+  }
+  return 0;
 }
+
+document.getElementById('spinWheelBtn').addEventListener('click', async () => {
+  if (!currentUser) {
+    console.error("No user is currently logged in.");
+    return;
+  }
+
+  const reward = calculateReward();
+  const userRef = doc(db, "user_rewards", currentUser.uid);
+  
+  // Update total earnings
+  const newTotal = userRewards.totalEarnings + reward;
+  await setDoc(userRef, {
+    totalEarnings: newTotal,
+    lastClaimed: new Date().toISOString()
+  }, { merge: true });
+
+  // Spin the wheel
+  const wheelInner = document.querySelector('.wheel-inner');
+  const spinResult = document.getElementById('spinResult');
+  
+  // Calculate the rotation based on the reward
+  const rotation = 360 * 5 + (reward * 72); // 5 full spins + segment rotation
+  wheelInner.style.transform = `rotate(${rotation}deg)`;
+
+  // Show result and redirect
+  setTimeout(() => {
+    spinResult.textContent = `Congratulations, you earned $${reward}! Happy spending!`;
+    
+    setTimeout(() => {
+      closeWheelPopup();
+      redirectToHome();
+    }, 3000);
+  }, 5000); // Wait for the spin to finish
+});
 
 // Redirect user to home.html
 function redirectToHome() {
   window.location.href = "html/home.html";
-}
-
-// Event listeners
-document.getElementById('claimButton').addEventListener('click', handleClaim);
-document.getElementById('couponPopup').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('couponPopup')) closeCouponPopup();
-});
-
-// Close the coupon pop-up
-function closeCouponPopup() {
-  document.getElementById('couponPopup').style.display = 'none';
 }
