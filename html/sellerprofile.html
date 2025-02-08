@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Profile</title>
     <link rel="stylesheet" href="../css/sellerprofile.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   </head>
 <body>
 
@@ -19,7 +20,7 @@
     <div class="user-info">
       <button class="username-button" id="username" onclick="window.location.href='profile.html'">Loading...</button>
       <button onclick="window.location.href='follow.html'">👥</button>
-      <button>🔔</button>
+      <button class="notification-button" onclick="window.location.href='notification.html'">🔔</button>
       <button>🛒</button>
       <button onclick="window.location.href='chat.html'">💬</button>
       <button class="sell-button" onclick="window.location.href='sell.html'">Sell</button>
@@ -31,6 +32,15 @@
     <div class="profile-column">
         <div class="profile-card">
           <div class="profile-picture-container">
+            <lottie-player 
+              id="sellerLottie"
+              src="https://assets1.lottiefiles.com/packages/lf20_hl5n0bwb.json" 
+              background="transparent" 
+              speed="1" 
+              style="width: 200px; height: 200px; display: none;"
+              loop 
+              autoplay>
+            </lottie-player>
             <img id="sellerProfilePicture" src="" class="profile-picture">
           </div>
           <div class="profile-info">

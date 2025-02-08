@@ -175,6 +175,28 @@ header {
   background: none;
 }
 
+.animation-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+#noResultsAnimation {
+  display: none;
+  margin-top: 2rem;
+}
+
+/* Add empty state styles */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-state h3 {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
 /* Mobile Styles */
 @media only screen and (max-width: 768px) {
   header {

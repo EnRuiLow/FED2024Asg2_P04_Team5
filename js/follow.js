@@ -70,39 +70,76 @@ function filterUsers(users, searchTerm) {
 
 function renderUsers(followedUsers, otherUsers, searchTerm = '') {
     const container = document.querySelector('.profile-container');
+    const searchAnimation = document.getElementById('searchAnimation');
+    
+    // Show loading animation
+    searchAnimation.style.display = 'block';
     
     // Clear existing content
     container.innerHTML = '';
-    
-    // Filter followed users
-    const filteredFollowedUsers = filterUsers(followedUsers, searchTerm);
-    
-    // Render followed users
-    if (filteredFollowedUsers.length > 0) {
-        container.insertAdjacentHTML('beforeend', '<h2>Following</h2>');
-        const followingContainer = document.createElement('div');
-        followingContainer.className = 'listings-container';
-        filteredFollowedUsers.forEach(user => {
-            followingContainer.appendChild(createUserCard(user));
-        });
-        container.appendChild(followingContainer);
-    }
-    
-    // Filter other users
-    const filteredOtherUsers = filterUsers(otherUsers, searchTerm);
-    
-    // Render other users
-    if (filteredOtherUsers.length > 0) {
-        container.insertAdjacentHTML('beforeend', '<h2>Users</h2>');
-        const usersContainer = document.createElement('div');
-        usersContainer.className = 'listings-container';
-        filteredOtherUsers.forEach(user => {
-            usersContainer.appendChild(createUserCard(user));
-        });
-        container.appendChild(usersContainer);
-    }
-}
 
+    // Simulate loading delay (you can remove this if not needed)
+    setTimeout(async () => {
+        // Hide animation after content loads
+        searchAnimation.style.display = 'none';
+
+        // Filter followed users
+        const filteredFollowedUsers = filterUsers(followedUsers, searchTerm);
+        
+        // Render followed users
+        if (filteredFollowedUsers.length > 0) {
+            container.insertAdjacentHTML('beforeend', '<h2>Following</h2>');
+            const followingContainer = document.createElement('div');
+            followingContainer.className = 'listings-container';
+            filteredFollowedUsers.forEach(user => {
+                followingContainer.appendChild(createUserCard(user));
+            });
+            container.appendChild(followingContainer);
+        } else if (searchTerm) {
+            container.insertAdjacentHTML('beforeend', `
+                <div class="empty-state">
+                    <h3>No followed users match your search</h3>
+                    <dotlottie-player 
+                        src="https://lottie.host/5b6294ef-902c-43d4-8b07-0d342ef5f0a5/6n5YF8S5Hk.json" 
+                        background="transparent" 
+                        speed="1" 
+                        style="width: 200px; height: 200px; margin: 0 auto;"
+                        loop 
+                        autoplay>
+                    </dotlottie-player>
+                </div>
+            `);
+        }
+
+        // Filter other users
+        const filteredOtherUsers = filterUsers(otherUsers, searchTerm);
+        
+        // Render other users
+        if (filteredOtherUsers.length > 0) {
+            container.insertAdjacentHTML('beforeend', '<h2>Users</h2>');
+            const usersContainer = document.createElement('div');
+            usersContainer.className = 'listings-container';
+            filteredOtherUsers.forEach(user => {
+                usersContainer.appendChild(createUserCard(user));
+            });
+            container.appendChild(usersContainer);
+        } else if (!searchTerm) {
+            container.insertAdjacentHTML('beforeend', `
+                <div class="empty-state">
+                    <h3>No users to display</h3>
+                    <dotlottie-player 
+                        src="https://lottie.host/3a4d8c1d-1d5e-4a5e-9d5e-1d5e4a5e9d5e/9XKp3W3XpM.json" 
+                        background="transparent" 
+                        speed="1" 
+                        style="width: 200px; height: 200px; margin: 0 auto;"
+                        loop 
+                        autoplay>
+                    </dotlottie-player>
+                </div>
+            `);
+        }
+    }, 500); // End of setTimeout
+}
 function createUserCard(user) {
     const card = document.createElement('div');
     card.className = 'listing-card';

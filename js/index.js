@@ -201,3 +201,4 @@ document.getElementById('spinWheelBtn').addEventListener('click', async () => {
 function redirectToHome() {
   window.location.href = "html/home.html";
 }
+

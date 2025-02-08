@@ -290,6 +290,13 @@ p a:hover {
   }
 }
 
+#login-lottie {
+  margin: 0 auto;
+  max-width: 400px;
+  height: 200px;
+  filter: brightness(0.9);
+}
+
 /* Popup Styles */
 .popup-overlay {
   display: none;

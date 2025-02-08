@@ -115,3 +115,9 @@ p a {
   color: #eee;
   font-weight: bold;
 }
+
+#lottie-animation {
+  margin: 0 auto;
+  max-width: 400px;
+  height: 200px;
+}

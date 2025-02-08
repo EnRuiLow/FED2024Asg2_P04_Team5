@@ -97,6 +97,7 @@ function displaySellerProfile(sellerData) {
     const profileUsername = document.getElementById('profileUsername');
     const profileEmail = document.getElementById('profileEmail');
     const sellerProfilePicture = document.getElementById('sellerProfilePicture');
+    const sellerLottie = document.getElementById('sellerLottie');
     const sellerProfileLink = document.getElementById('sellerProfileLink');
     const sellerRating = document.getElementById('sellerRating');
     const sellerReviews = document.getElementById('sellerReviews');
@@ -104,7 +105,15 @@ function displaySellerProfile(sellerData) {
     if (sellerData) {
         profileUsername.textContent = sellerData.name || "Seller Name Not Found";
         profileEmail.textContent = sellerData.email || "No email provided";
-        sellerProfilePicture.src = sellerData.profilePicture || "default-avatar.jpg";
+        
+        if (sellerData.profilePicture) {
+            sellerProfilePicture.src = sellerData.profilePicture;
+            sellerLottie.style.display = 'none';
+        } else {
+            sellerProfilePicture.src = "";
+            sellerLottie.style.display = 'block';
+        }
+        
         sellerProfileLink.textContent = sellerData.name || `@${ownerId}`;
         sellerProfileLink.href = `sellerprofile.html?ownerId=${ownerId}`;
         sellerRating.textContent = sellerData.rating || "N/A";
@@ -112,7 +121,8 @@ function displaySellerProfile(sellerData) {
     } else {
         profileUsername.textContent = "Seller Not Found";
         profileEmail.textContent = "No email provided";
-        sellerProfilePicture.src = "default-avatar.jpg";
+        sellerProfilePicture.src = "";
+        sellerLottie.style.display = 'block';
         sellerProfileLink.textContent = "Seller Not Found";
     }
 }

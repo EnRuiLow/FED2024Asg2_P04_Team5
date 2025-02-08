@@ -49,4 +49,16 @@ document.getElementById('registerForm').addEventListener('submit', async functio
   }
 });
 
-  
+
+document.addEventListener('DOMContentLoaded', function () {
+  const animationContainer = document.getElementById('lottie-animation');
+
+  // Load the Lottie animation
+  const animation = lottie.loadAnimation({
+    container: animationContainer, // The DOM element to contain the animation
+    renderer: 'svg', // Renderer: 'svg', 'canvas', or 'html'
+    loop: true, // Whether the animation should loop
+    autoplay: true, // Whether the animation should play automatically
+    path: 'https://assets10.lottiefiles.com/packages/lf20_5tl1xxnz.json', // URL to the Lottie JSON file
+  });
+});
