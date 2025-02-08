@@ -57,14 +57,21 @@ header {
 }
 
 .user-info button {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   margin: 0 5px;
   border: none;
-  background: #ddd;
-  border-radius: 50%;
-  padding: 7px;
+  background: #333;
+  color: white;
+  border-radius: 5px;
+  padding: 8px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
+
+.user-info button:hover {
+  background: #0078ff;
+}
+
 
 .user-info button.sell-button {
   font-size: 1.05rem;
@@ -75,10 +82,6 @@ header {
   padding: 7px;
   cursor: pointer;
   font-weight: bold;
-}
-
-.user-info button:hover {
-  background: #ccc;
 }
 
 .user-info .username-button {

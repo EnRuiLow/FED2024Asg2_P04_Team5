@@ -68,6 +68,11 @@
     transition: background 0.3s ease;
   }
   
+  .user-info button:hover {
+    background: #0078ff;
+  }
+  
+  
   .user-info button.sell-button {
     border-radius: 5px;
     padding: 8px 12px;
