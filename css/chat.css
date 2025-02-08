@@ -129,6 +129,12 @@ footer {
   background: #1e1e1e;
   border-top: 2px solid #333;
   align-items: center;
+  width: 100%; /* Ensure it spans the full width */
+}
+
+#chatForm {
+  display: flex;
+  width: 100%; /* Makes sure the form takes the full width */
 }
 
 #messageInput {
@@ -139,8 +145,9 @@ footer {
   outline: none;
   background: #2a2a2a;
   color: #fff;
-  font-size: 16px; /* Bigger text */
-  height: 50px; /* Increased height */
+  font-size: 16px;
+  height: 50px;
+  width: 100%; /* Makes sure input fills the width */
 }
 
 button[type="submit"] {
@@ -153,7 +160,8 @@ button[type="submit"] {
   cursor: pointer;
   transition: background 0.3s;
   font-size: 16px;
-  height: 50px; /* Matches input height */
+  height: 50px;
+  flex-shrink: 0; /* Prevents the button from shrinking */
 }
 
 button[type="submit"]:hover {
