@@ -1,114 +1,146 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-  }
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #111;
+  color: #eee;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #222;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #eee;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #ff4b2b;
+}
+
+/* Auth Links */
+.auth-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: 1px solid white;
+  border-radius: 5px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.auth-links a:hover {
+  background: #ff4b2b;
+  border-color: #ff4b2b;
+}
+
+/* Form Container */
+.form-container {
+  max-width: 400px;
+  margin: 4rem auto;
+  background: #222;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #eee;
+}
   
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #ccc;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background: #333;
+  color: white;
+  display: block;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  border-color: #ff4b2b;
+  outline: none;
+}
   
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-    margin: 0;
-    padding: 0;
-  }
+.btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 75, 43, 0.5);
+}
   
-  nav ul li a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-  }
-  
-  .auth-links a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border: 1px solid #333;
-    border-radius: 5px;
-  }
-  
-  .form-container {
-    max-width: 400px;
-    margin: 4rem auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-container h1 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    color: #333;
-  }
-  
-  .input-group {
-    margin-bottom: 1rem;
-  }
-  
-  .input-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: #555;
-  }
-  
-  .input-group input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .btn {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 1rem;
-  }
-  
-  .btn:hover {
-    background-color: #555;
-  }
-  
-  .social-login {
-    width: 100%;
-    padding: 10px;
-    background: #eee;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 10px;
-  }
-  
-  .social-login:hover {
-    background: #ddd;
-  }
-  
-  p {
-    text-align: center;
-  }
-  
-  p a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-  }
+.social-login {
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.social-login:hover {
+  background: #444;
+}
+
+p {
+  text-align: center;
+}
+
+p a {
+  text-decoration: none;
+  color: #ff4b2b;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+p a:hover {
+  color: #ff416c;
+}
 
   .coupon-popup-overlay {
     display: none;
@@ -117,38 +149,45 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  }
-  
-  .coupon-tracker {
-    background: white;
+}
+
+.coupon-tracker {
+    background: #222;
     padding: 2rem;
     border-radius: 15px;
     width: 90%;
     max-width: 400px;
     position: relative;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
     animation: popIn 0.3s ease-out;
-  }
-  
-  .close-btn {
+}
+
+.close-btn {
     position: absolute;
     right: 1rem;
     top: 1rem;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #666;
-  }
+    color: #bbb;
+}
+
+.close-btn:hover {
+    color: white;
+}
   
-  @keyframes popIn {
-    from {
+@keyframes popIn {
+  from {
       transform: scale(0.8);
       opacity: 0;
-    }
-    to {
+  }
+  to {
       transform: scale(1);
       opacity: 1;
-    }
   }
+}
+
+

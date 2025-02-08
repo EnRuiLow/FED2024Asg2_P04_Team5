@@ -1,132 +1,177 @@
-body {
-  font-family: Arial, sans-serif;
+/* Global Styles */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
   display: flex;
   height: 100vh;
-  background-color: #f8f8f8;
-}
-.back-home-btn {
-  background-color: transparent;
-  color: black;
-  font-size: 24px;
-  border: none;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 10px;
-  z-index: 1000;
+  background-color: #121212;
+  color: #fff;
 }
 
-.back-home-btn:hover {
-  color: #555;
-}
-
-.back-home-btn:focus {
-  outline: none;
-}
-
-
+/* Sidebar (Chat List) */
 .sidebar {
   width: 300px;
-  background-color: #fff;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  background: #1e1e1e;
+  padding: 20px;
   overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+  border-right: 2px solid #333;
 }
 
 .sidebar-header {
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
 }
 
-.chat-list {
-  padding: 10px;
+.sidebar-header h2 {
+  font-size: 20px;
 }
 
-.chat-item {
-  padding: 10px;
+.close-sidebar {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
   cursor: pointer;
-  border-radius: 5px;
-  margin-bottom: 5px;
+}
+
+/* Chat List */
+.chat-list {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
 }
 
-.chat-item:hover {
-  background-color: #f0f0f0;
+.chat-list div {
+  padding: 10px;
+  border-radius: 5px;
+  background: #2a2a2a;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
-.unread-badge {
-  background-color: red;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 10px;
-  font-size: 0.8rem;
+.chat-list div:hover {
+  background: #3a3a3a;
 }
 
+/* Chat Container */
 .chat-container {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background: #181818;
 }
 
 header {
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
   display: flex;
   align-items: center;
+  padding: 15px;
+  background: #1e1e1e;
+  border-bottom: 2px solid #333;
 }
 
-.menu-btn {
+.menu-btn,
+.back-home-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  color: #fff;
+  font-size: 20px;
   cursor: pointer;
   margin-right: 10px;
 }
 
-.messages {
+h2 {
   flex: 1;
-  padding: 15px;
-  overflow-y: auto;
+  text-align: center;
 }
 
+/* Messages */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Chat Bubbles */
 .message {
+  max-width: 75%;
+  padding: 10px;
+  border-radius: 10px;
   margin-bottom: 10px;
 }
 
-footer {
-  padding: 15px;
-  border-top: 1px solid #ddd;
+.message.sent {
+  align-self: flex-end;
+  background: #0078ff;
+  color: #fff;
 }
 
-#chatForm {
+.message.received {
+  align-self: flex-start;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+/* Footer (Input & Send Button) */
+/* Footer (Input & Send Button) */
+footer {
   display: flex;
+  padding: 15px;
+  background: #1e1e1e;
+  border-top: 2px solid #333;
+  align-items: center;
 }
 
 #messageInput {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-right: 10px;
-}
-
-#chatForm button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  padding: 15px;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  border-radius: 8px;
+  outline: none;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 16px; /* Bigger text */
+  height: 50px; /* Increased height */
 }
 
-#chatForm button:hover {
-  background-color: #0056b3;
+button[type="submit"] {
+  padding: 15px 20px;
+  background: #0078ff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  margin-left: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 16px;
+  height: 50px; /* Matches input height */
+}
+
+button[type="submit"]:hover {
+  background: #005fcc;
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  footer {
+    padding: 10px;
+  }
+
+  #messageInput {
+    height: 45px;
+  }
+
+  button[type="submit"] {
+    height: 45px;
+  }
 }
