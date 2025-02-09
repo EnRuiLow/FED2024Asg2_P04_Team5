@@ -43,7 +43,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
   });
 
     alert('Registration successful!');
-    window.location.href = '/index.html'; // Redirect to login page
+    window.location.href = '../index.html'; // Redirect to login page
   } catch (error) {
     alert('An error occurred: ' + error.message);
   }
