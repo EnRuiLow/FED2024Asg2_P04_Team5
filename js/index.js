@@ -93,7 +93,7 @@ async function initializeUserRewards() {
     await setDoc(userRef, {
       email: currentUser.email,
       lastClaimed: "2000-01-01",
-      totalEarnings: 0
+      totalRewards: 0
     });
   }
 
@@ -134,9 +134,9 @@ document.getElementById('spinWheelBtn').addEventListener('click', async () => {
   const userRef = doc(db, "user_rewards", currentUser.uid);
   
   // Update total earnings
-  const newTotal = userRewards.totalEarnings + reward;
+  const newTotal = userRewards.totalRewards + reward;
   await setDoc(userRef, {
-    totalEarnings: newTotal,
+    totalRewards: newTotal,
     lastClaimed: new Date().toISOString()
   }, { merge: true });
 
@@ -172,9 +172,9 @@ document.getElementById('spinWheelBtn').addEventListener('click', async () => {
   const userRef = doc(db, "user_rewards", currentUser.uid);
   
   // Update total earnings
-  const newTotal = userRewards.totalEarnings + reward;
+  const newTotal = userRewards.totalRewards + reward;
   await setDoc(userRef, {
-    totalEarnings: newTotal,
+    totalRewards: newTotal,
     lastClaimed: new Date().toISOString()
   }, { merge: true });
 
