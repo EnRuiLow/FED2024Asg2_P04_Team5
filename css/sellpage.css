@@ -65,12 +65,11 @@ header {
     cursor: pointer;
     padding: 7px;
     margin: 0 5px;
-    color: #777777;
+    color: #eee;
   }
   
   .user-info .username-button:hover {
     text-decoration: underline;
-    background: none;
   }
 
 .user-info button.sell-button {
