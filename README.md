@@ -6,13 +6,7 @@ Meanwhile, you could also create your own profile by pressing on your own name a
 ## Design Process
 Our website was made in order to help the user be able to not just buy, but also be able to sell. This could be done by of course, our sell feature, where they could list products that they might not need. Our website also has thsi special gamification feature, which is the spin the wheel gamification feature which not a lot of websites actually offer, but we offer this to our customers, especially students like us, as they would not only need to spend lesser amount of money buying whatever they need, and they could get these discounts daily. As long as they sign in.
 
-In particular, as part of this section we recommend that you provide a list of User Stories, with the following general structure:
-
-As a user type, I want to perform an action, so that I can achieve a goal.
-This section is also where you would share links to any wireframes, mockups, diagrams etc. that you created as part of the design process. These files should themselves either be included as a pdf file in the project itself (in an separate directory) Include the Adobe XD wireframe as a folder. You can include the XD share url.
-
 ## Features
-In this section, you should go over the different parts of your project, and describe each in a sentence or so.
 
 ### Existing Features
 Feature 1 - Gamification: We have allowed the users to actually spin the wheel for a chance to win themselves some discounts.
@@ -25,11 +19,9 @@ Feature 4 - Account Creation and Login: Users can actually create accounts and l
 
 Feature 5 - Listing Management: We actually allowed users to create listings, have active listings limit, and included listing expiry so that everyone's listings would have a chance to 
 
-Feature 6 - Communication and Transactions
+Feature 6 - Communication and Transactions: Buyers can start a chat with sellers to discuss transaction details. Buyers can submit an offer price through the system. The seller could also accept or decline the offered price.
 
-Feature 7 - 
-
-In addition, you may also use this section to discuss plans for additional features to be implemented in the future:
+Feature 7 - Users receive notifications for new listings, offers, and messages.
 
 ### Features Left to Implement
 Another feature idea
