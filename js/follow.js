@@ -17,7 +17,7 @@ import {
 const firebaseConfig = {
     apiKey: "AIzaSyAw1ITeg1Vgb1r4BEC3j7G_LpaoHMS1v78",
     authDomain: "p04-team5.firebaseapp.com",
-    projectId: "p04-team5", // This was missing in your error
+    projectId: "p04-team5",
     storageBucket: "p04-team5.appspot.com",
     messagingSenderId: "88767932375",
     appId: "1:88767932375:web:08c1c4fe7cc99688e1cd92",
@@ -36,22 +36,18 @@ async function loadFollowData(searchTerm = '') {
     }
 
     try {
-        // 1. Get all followed users
         const followingQuery = query(collection(db, "user_following"), where("userEmail", "==", user.email));
         const followingSnapshot = await getDocs(followingQuery);
         const followedEmails = followingSnapshot.docs.map(doc => doc.data().ownerEmail);
         
-        // 2. Get all users from profile collection
         const profilesSnapshot = await getDocs(collection(db, "profile"));
         
-        // 3. Separate into followed and others
         const [followedUsers, otherUsers] = profilesSnapshot.docs.reduce((acc, doc) => {
             const userData = doc.data();
             followedEmails.includes(userData.email) ? acc[0].push(userData) : acc[1].push(userData);
             return acc;
         }, [[], []]);
 
-        // 4. Render the sections with the search term
         renderUsers(followedUsers, otherUsers, searchTerm);
     } catch (error) {
         console.error("Error loading follow data:", error);
@@ -60,33 +56,21 @@ async function loadFollowData(searchTerm = '') {
 }
 
 function filterUsers(users, searchTerm) {
-    if (!searchTerm) return users; // If no search term, return all users
+    if (!searchTerm) return users;
     return users.filter(user => 
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 }
 
-
 function renderUsers(followedUsers, otherUsers, searchTerm = '') {
     const container = document.querySelector('.profile-container');
-    const searchAnimation = document.getElementById('searchAnimation');
     
-    // Show loading animation
-    searchAnimation.style.display = 'block';
-    
-    // Clear existing content
     container.innerHTML = '';
 
-    // Simulate loading delay (you can remove this if not needed)
     setTimeout(async () => {
-        // Hide animation after content loads
-        searchAnimation.style.display = 'none';
-
-        // Filter followed users
         const filteredFollowedUsers = filterUsers(followedUsers, searchTerm);
         
-        // Render followed users
         if (filteredFollowedUsers.length > 0) {
             container.insertAdjacentHTML('beforeend', '<h2>Following</h2>');
             const followingContainer = document.createElement('div');
@@ -99,22 +83,12 @@ function renderUsers(followedUsers, otherUsers, searchTerm = '') {
             container.insertAdjacentHTML('beforeend', `
                 <div class="empty-state">
                     <h3>No followed users match your search</h3>
-                    <dotlottie-player 
-                        src="https://lottie.host/5b6294ef-902c-43d4-8b07-0d342ef5f0a5/6n5YF8S5Hk.json" 
-                        background="transparent" 
-                        speed="1" 
-                        style="width: 200px; height: 200px; margin: 0 auto;"
-                        loop 
-                        autoplay>
-                    </dotlottie-player>
                 </div>
             `);
         }
 
-        // Filter other users
         const filteredOtherUsers = filterUsers(otherUsers, searchTerm);
         
-        // Render other users
         if (filteredOtherUsers.length > 0) {
             container.insertAdjacentHTML('beforeend', '<h2>Users</h2>');
             const usersContainer = document.createElement('div');
@@ -127,24 +101,16 @@ function renderUsers(followedUsers, otherUsers, searchTerm = '') {
             container.insertAdjacentHTML('beforeend', `
                 <div class="empty-state">
                     <h3>No users to display</h3>
-                    <dotlottie-player 
-                        src="https://lottie.host/3a4d8c1d-1d5e-4a5e-9d5e-1d5e4a5e9d5e/9XKp3W3XpM.json" 
-                        background="transparent" 
-                        speed="1" 
-                        style="width: 200px; height: 200px; margin: 0 auto;"
-                        loop 
-                        autoplay>
-                    </dotlottie-player>
                 </div>
             `);
         }
-    }, 500); // End of setTimeout
+    }, 500);
 }
+
 function createUserCard(user) {
     const card = document.createElement('div');
     card.className = 'listing-card';
 
-    // Use a transparent 1x1 pixel if the profile picture is missing
     const profileImage = user.profilePicture ? user.profilePicture : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
     card.innerHTML = `
@@ -179,13 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (searchButton && searchInput) {
         searchButton.addEventListener('click', () => {
             const searchTerm = searchInput.value.trim();
-            loadFollowData(searchTerm); // Pass search term to loadFollowData
+            loadFollowData(searchTerm);
         });
 
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const searchTerm = searchInput.value.trim();
-                loadFollowData(searchTerm); // Pass search term to loadFollowData
+                loadFollowData(searchTerm);
             }
         });
     } else {
