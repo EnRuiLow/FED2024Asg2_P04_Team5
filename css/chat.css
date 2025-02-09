@@ -129,12 +129,12 @@ footer {
   background: #1e1e1e;
   border-top: 2px solid #333;
   align-items: center;
-  width: 100%; /* Ensure it spans the full width */
+  width: 100%;
 }
 
 #chatForm {
   display: flex;
-  width: 100%; /* Makes sure the form takes the full width */
+  width: 100%;
 }
 
 #messageInput {
@@ -147,7 +147,6 @@ footer {
   color: #fff;
   font-size: 16px;
   height: 50px;
-  width: 100%; /* Makes sure input fills the width */
 }
 
 button[type="submit"] {
@@ -161,7 +160,7 @@ button[type="submit"] {
   transition: background 0.3s;
   font-size: 16px;
   height: 50px;
-  flex-shrink: 0; /* Prevents the button from shrinking */
+  flex-shrink: 0;
 }
 
 button[type="submit"]:hover {
@@ -170,15 +169,45 @@ button[type="submit"]:hover {
 
 /* Mobile Optimization */
 @media (max-width: 768px) {
+  /* Sidebar */
+  .sidebar {
+    width: 70%; /* Smaller sidebar for mobile */
+    max-width: 250px; /* Limit maximum width */
+  }
+
+  /* Header */
+  header {
+    padding: 10px;
+  }
+
+  .menu-btn,
+  .back-home-btn {
+    font-size: 18px; /* Smaller buttons for mobile */
+  }
+
+  h2 {
+    font-size: 16px; /* Smaller title for mobile */
+  }
+
+  /* Messages */
+  .messages {
+    padding: 10px;
+  }
+
+  /* Footer */
   footer {
     padding: 10px;
   }
 
   #messageInput {
-    height: 45px;
+    padding: 10px;
+    font-size: 14px; /* Smaller font size for input */
+    height: 45px; /* Smaller input height */
   }
 
   button[type="submit"] {
-    height: 45px;
+    padding: 10px 15px;
+    font-size: 14px; /* Smaller font size for button */
+    height: 45px; /* Smaller button height */
   }
 }
