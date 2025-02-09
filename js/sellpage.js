@@ -79,7 +79,7 @@ async function fetchListingDetails() {
         }
     } else {
         alert("Listing not found.");
-        window.location.href = "home.html";
+        window.location.href = "../home.html";
     }
 }
 
@@ -170,6 +170,6 @@ onAuthStateChanged(auth, (user) => {
         fetchListingDetails();
     } else {
         alert("Please log in to make an offer or chat with the seller.");
-        window.location.href = "/index.html"; // Redirect to login page
+        window.location.href = "../home.html"; // Redirect to login page
     }
 });
