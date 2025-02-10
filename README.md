@@ -24,18 +24,13 @@ Feature 6 - Communication and Transactions: Buyers can start a chat with sellers
 Feature 7 - Users receive notifications for new listings, offers, and messages.
 
 ### Features Left to Implement
-Another feature idea
-Technologies Used
-In this section, you should mention all of the languages, frameworks, libraries, and any other tools that you have used to construct this project. For each, provide its name, a link to its official site and a short sentence of why it was used.
+The listing bumps were left to be implemented
 
 JQuery
 The project uses JQuery to simplify DOM manipulation.
 
 ## Assistive AI
-In this section you should document the process of using AI tools eg, ChatGPT, Gemini etc to help you with the development of features/functionalities of your web application. (Failure to document your use of AI tools will result in loss of marks.) Example below:
-
-Spotify API: ChatGPT was used to help with the implementation of the Spotify API (include screenshots of generated AI codes.)
-sample img
+Registration API: ChatGPT was used to help with the implementation of the Registration API 
 
 ## Testing
 For any scenarios that have not been automated, test the user stories manually and provide as much detail as is relevant. A particularly useful form for describing your testing process is via scenarios, such as:
