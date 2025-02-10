@@ -26,36 +26,23 @@ Feature 7 - Users receive notifications for new listings, offers, and messages.
 ### Features Left to Implement
 The listing bumps were left to be implemented
 
-JQuery
-The project uses JQuery to simplify DOM manipulation.
+
 
 ## Assistive AI
-Registration API: ChatGPT was used to help with the implementation of the Registration API 
+Registration API: ChatGPT was used to help with the implementation of the Registration API ![image](https://github.com/user-attachments/assets/4e8368cd-d122-44da-8b03-79892ed7fd9e)
+
 
 ## Testing
-For any scenarios that have not been automated, test the user stories manually and provide as much detail as is relevant. A particularly useful form for describing your testing process is via scenarios, such as:
-
-Contact form:
-Go to the "Contact Us" page
-Try to submit the empty form and verify that an error message about the required fields appears
-Try to submit the form with an invalid email address and verify that a relevant error message appears
-Try to submit the form with all inputs valid and verify that a success message appears.
-In addition, you should mention in this section how your project looks and works on different browsers and screen sizes.
-
-You should also mention in this section any interesting bugs or problems you discovered during your testing, even if you haven't addressed them yet.
-
-If this section grows too long, you may want to split it off into a separate file and link to it from here.
+Selling page:
+Go to the "Sell" page
+Try to list an item, with everything filled in, then go back to the home page, where the listing should be up, and then press on the listing. Everything over there should be fine, just like how the video showcased.
 
 ## Credits
 
 ### Content
-- The text for section Y was copied from the [Wikipedia article Z](https://en.wikipedia.org/wiki/Z)
+- NIL
 
 ### Media
-- The photos used in this site were obtained from ...
-Content
-The text for section Y was copied from the Wikipedia article Z
-Media
-The photos used in this site were obtained from ...
+- The photos used in this site were all obtained from Google with the search "images".
 Acknowledgements
-I received inspiration for this project from X
+I received inspiration for this project from Carousell for the home page, and that is all.
